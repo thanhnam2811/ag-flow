@@ -24,6 +24,10 @@ The project follows Semantic Versioning once tagged releases begin.
 - Three canonical route case studies: Direct, Guided, and Orchestrated
 - Machine-readable YAML fixtures for all 25 routing cases and 12 adversarial cases
 - Fixture validation for required fields, route enums, list types, versions, and unique IDs
+- Lightweight empirical benchmark harness for OpenAI, Anthropic, and Gemini
+- Routing accuracy, adversarial resilience, desired-behavior, token-usage, and latency metrics
+- API-free benchmark dry-run and CI compilation checks
+- Benchmark methodology documenting current limitations and the need for paired real-repository baselines before claiming token savings
 
 ## [0.1.0] - 2026-08-25
 
