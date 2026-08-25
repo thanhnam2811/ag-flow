@@ -17,6 +17,10 @@ The project follows Semantic Versioning once tagged releases begin.
 - Session handoff workflow
 - Routing and adversarial test cases
 - Project contribution and security documentation
+- Draft 2020-12 JSON Schema for bounded Work Packages
+- Canonical schema-validated Work Package example
+- Lightweight repository validator for Agent Skill frontmatter, relative Markdown links, schema validity, and examples
+- GitHub Actions validation on pushes to `main` and pull requests
 
 ## [0.1.0] - 2026-08-25
 
