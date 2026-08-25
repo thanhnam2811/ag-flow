@@ -18,6 +18,9 @@ from typing import Any, Callable
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 FIXTURE_DIR = ROOT / "tests" / "fixtures"
 ROUTING_SKILL = ROOT / "skills" / "adaptive-routing" / "SKILL.md"
 
