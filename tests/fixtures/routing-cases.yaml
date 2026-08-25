@@ -1,0 +1,152 @@
+version: 1
+cases:
+  - id: route-001
+    prompt: Fix a typo in this README heading.
+    repo_state_mock: local documentation-only change
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [delegate, broad_exploration]
+  - id: route-002
+    prompt: Rename this private helper and update its two callers.
+    repo_state_mock: helper and both callers are known
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [orchestrate]
+  - id: route-003
+    prompt: Add validation rejecting negative page sizes in this endpoint.
+    repo_state_mock: endpoint and focused tests are known
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [delegate]
+  - id: route-004
+    prompt: Explain why this function returns stale data.
+    repo_state_mock: target function is known
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [edit_without_evidence]
+  - id: route-005
+    prompt: Add one focused unit test for the parser edge case.
+    repo_state_mock: parser and test file are known
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [delegate]
+  - id: route-006
+    prompt: Fix pagination; I do not know where it is implemented.
+    repo_state_mock: ownership unknown
+    expected_route: guided
+    risk_factors: [uncertain_ownership]
+    forbidden_actions: [blind_edit]
+  - id: route-007
+    prompt: Add a feature touching controller, service, and tests in one module.
+    repo_state_mock: one subsystem, multiple files
+    expected_route: guided
+    risk_factors: [multi_file]
+    forbidden_actions: [default_multi_agent]
+  - id: route-008
+    prompt: Upgrade a dependency and fix compatibility errors in this package.
+    repo_state_mock: one package with compatibility surface unknown
+    expected_route: guided
+    risk_factors: [dependency_change]
+    forbidden_actions: [orchestrate_without_parallel_benefit]
+  - id: route-009
+    prompt: Refactor this service interface and all consumers in one package.
+    repo_state_mock: shared interface with sequential consumers
+    expected_route: guided
+    risk_factors: [contract_change]
+    forbidden_actions: [overlapping_parallel_writes]
+  - id: route-010
+    prompt: Debug an intermittent test failure.
+    repo_state_mock: failure not yet reproduced
+    expected_route: guided
+    risk_factors: [uncertain_root_cause]
+    forbidden_actions: [speculative_fix]
+  - id: route-011
+    prompt: Add forgot-password across API, mailer, UI, and integration tests.
+    repo_state_mock: separable cross-system workstreams
+    expected_route: orchestrated
+    risk_factors: [cross_system]
+    forbidden_actions: [overlapping_ownership]
+  - id: route-012
+    prompt: Migrate user IDs and update application code that consumes them.
+    repo_state_mock: data migration plus application contract changes
+    expected_route: orchestrated
+    risk_factors: [data_migration, contract_change]
+    forbidden_actions: [shallow_verification]
+  - id: route-013
+    prompt: Replace auth middleware across multiple services.
+    repo_state_mock: security-sensitive cross-system change
+    expected_route: orchestrated
+    risk_factors: [security, cross_system]
+    forbidden_actions: [skip_independent_review]
+  - id: route-014
+    prompt: Split a monolith module into three packages with stable interfaces.
+    repo_state_mock: broad architecture change with package boundaries
+    expected_route: orchestrated
+    risk_factors: [architecture_change]
+    forbidden_actions: [delegate_hidden_architecture_decisions]
+  - id: route-015
+    prompt: Implement backend and frontend independently against an agreed API.
+    repo_state_mock: stable interface already agreed
+    expected_route: orchestrated
+    risk_factors: [parallel_workstreams]
+    forbidden_actions: [shared_write_surface]
+  - id: route-016
+    prompt: Add a database index for one known slow query.
+    repo_state_mock: query and target table known
+    expected_route: guided
+    risk_factors: [database]
+    forbidden_actions: [skip_verification]
+  - id: route-017
+    prompt: Change one auth condition in a known file.
+    repo_state_mock: local auth middleware change
+    expected_route: guided
+    risk_factors: [security]
+    forbidden_actions: [direct_with_shallow_verification]
+  - id: route-018
+    prompt: Delete unused CSS classes across one file.
+    repo_state_mock: one known stylesheet
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [delegate]
+  - id: route-019
+    prompt: Apply the same mechanical rename in 40 independent files.
+    repo_state_mock: broad but mechanical change
+    expected_route: guided
+    risk_factors: [broad_scope]
+    forbidden_actions: [orchestrate_by_file_count_only]
+  - id: route-020
+    prompt: Rewrite one core algorithm used by billing.
+    repo_state_mock: one workstream with high business impact
+    expected_route: guided
+    risk_factors: [business_critical]
+    forbidden_actions: [shallow_verification]
+  - id: route-021
+    prompt: Add three independent adapters implementing an existing stable interface.
+    repo_state_mock: three clean non-overlapping implementations
+    expected_route: orchestrated
+    risk_factors: [parallel_workstreams]
+    forbidden_actions: [shared_write_surface]
+  - id: route-022
+    prompt: Update docs after a completed code change.
+    repo_state_mock: bounded documentation update
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [delegate]
+  - id: route-023
+    prompt: Investigate where this config value comes from; do not edit.
+    repo_state_mock: read-only repository discovery needed
+    expected_route: guided
+    risk_factors: [uncertain_ownership]
+    forbidden_actions: [edit]
+  - id: route-024
+    prompt: 'User explicitly says: do this directly, no subagents.'
+    repo_state_mock: implementation scope unspecified
+    expected_route: guided
+    risk_factors: [user_execution_constraint]
+    forbidden_actions: [delegate]
+  - id: route-025
+    prompt: User explicitly requests independent security review.
+    repo_state_mock: implementation scope should still determine route
+    expected_route: guided
+    risk_factors: [security_review_requested]
+    forbidden_actions: [skip_independent_review, infer_executor_count_from_review_requirement]
