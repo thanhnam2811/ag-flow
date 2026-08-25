@@ -139,11 +139,11 @@ cases:
     risk_factors: [uncertain_ownership]
     forbidden_actions: [edit]
   - id: route-024
-    prompt: 'User explicitly says: do this directly, no subagents.'
-    repo_state_mock: implementation scope unspecified
+    prompt: Do this yourself; do not use subagents.
+    repo_state_mock: implementation ownership is unknown and repository discovery is required before editing
     expected_route: guided
-    risk_factors: [user_execution_constraint]
-    forbidden_actions: [delegate]
+    risk_factors: [user_execution_constraint, uncertain_ownership]
+    forbidden_actions: [delegate, blind_edit]
   - id: route-025
     prompt: User explicitly requests independent security review.
     repo_state_mock: implementation scope should still determine route
