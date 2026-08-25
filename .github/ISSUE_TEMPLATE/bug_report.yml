@@ -1,0 +1,50 @@
+name: Bug report
+description: Report incorrect routing, delegation, execution, or verification behavior
+title: "[Bug]: "
+labels: []
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: Provide the prompt or workflow scenario that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Routing
+        - Exploration
+        - Planning
+        - Dispatch
+        - Execution
+        - Verification
+        - Debugging
+        - Handoff
+        - Runtime compatibility
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Agent/runtime
+      description: Example: Claude Code, Codex, Cursor, OpenCode
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
