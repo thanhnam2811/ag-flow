@@ -2,6 +2,7 @@
 
 **Adaptive, agent-agnostic workflow skills for coding agents.**
 
+[![Validate](https://github.com/thanhnam2811/ag-flow/actions/workflows/ci.yml/badge.svg)](https://github.com/thanhnam2811/ag-flow/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-111827)](https://skills.sh/)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-supported-7C3AED)](https://docs.anthropic.com/en/docs/claude-code)
@@ -127,8 +128,23 @@ See [`references/routing-matrix.md`](references/routing-matrix.md) for the routi
 
 - [`routing-matrix.md`](references/routing-matrix.md) — route selection and escalation rules
 - [`work-package-contract.md`](references/work-package-contract.md) — bounded delegation contract
+- [`work-package.schema.json`](references/schemas/work-package.schema.json) — machine-readable Work Package contract
+- [`work-package.example.yaml`](references/examples/work-package.example.yaml) — canonical schema-validated example
 - [`verification-levels.md`](references/verification-levels.md) — risk-aware verification depth
 - [`capability-fallbacks.md`](references/capability-fallbacks.md) — graceful degradation across runtimes
+
+## Validation
+
+The repository validates its own contracts on every push to `main` and every pull request. The validator checks Agent Skill frontmatter, relative Markdown links, the JSON Schema itself, and the canonical Work Package example.
+
+Run the same checks locally:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python scripts/validate.py
+```
+
+This keeps the validation layer intentionally small: one Python script plus `PyYAML` and `jsonschema`, without introducing a project-specific CLI.
 
 ## Tests
 
@@ -153,7 +169,13 @@ ag-flow/
 │   ├── systematic-debugging/
 │   └── session-handoff/
 ├── references/
+│   ├── examples/
+│   └── schemas/
+├── scripts/
+│   └── validate.py
 ├── tests/
+├── .github/workflows/ci.yml
+├── requirements-dev.txt
 ├── CONTRIBUTING.md
 ├── SECURITY.md
 ├── CODE_OF_CONDUCT.md
