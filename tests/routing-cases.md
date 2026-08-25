@@ -23,11 +23,11 @@ These cases are a behavioral test corpus for `adaptive-routing`. Expected routes
 | 17 | Change one auth condition in a known file. | Guided | local scope but elevated security risk |
 | 18 | Delete unused CSS classes across one file. | Direct | cheap local cleanup |
 | 19 | Apply the same mechanical rename in 40 independent files. | Guided | broad but little architecture; delegation optional by cost |
-| 20 | Rewrite one core algorithm used by billing. | Guided | one workstream, high business risk, strong verification |
+| 20 | Rewrite one core algorithm used by billing. | Guided | one workstream; high business risk raises verification rather than orchestration |
 | 21 | Add three independent adapters implementing an existing stable interface. | Orchestrated | clean parallel packages |
 | 22 | Update docs after a completed code change. | Direct | documentation-only bounded work |
-| 23 | Investigate where this config value comes from; do not edit. | Guided | exploration task; no implementation needed |
-| 24 | User explicitly says: do this directly, no subagents. | Direct/Guided without delegation | explicit execution constraint wins |
+| 23 | Investigate where this config value comes from; do not edit. | Guided | read-only exploration still needs repository discovery |
+| 24 | Do this yourself; do not use subagents. | Guided without delegation | execution constraint disables delegation, while unknown ownership still requires discovery |
 | 25 | User explicitly requests independent security review. | route by implementation scope + Level 3 verification | review requirement is orthogonal to executor count |
 
 ## Assertions
@@ -36,6 +36,9 @@ A router should fail this corpus if it:
 
 - defaults every multi-file task to Orchestrated
 - uses agent count as a proxy for quality
+- treats elevated risk alone as sufficient reason to orchestrate
+- treats read-only work as automatically Direct despite unresolved repository uncertainty
+- converts a no-subagent constraint into a Direct route when exploration or planning is still needed
 - ignores security/data risk because a change is one-file
 - keeps the previous task's route automatically
 - delegates when package boundaries overlap heavily
