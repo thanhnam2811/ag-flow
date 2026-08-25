@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -15,13 +16,24 @@ def require_binary(name: str) -> str:
     return path
 
 
-def run_command(command: list[str], cwd: Path, timeout: int) -> tuple[str, str, float]:
+def run_command(
+    command: list[str],
+    cwd: Path,
+    timeout: int,
+    input_text: str | None = None,
+) -> tuple[str, str, float]:
     started = time.perf_counter()
+    use_shell = sys.platform.startswith("win") and (
+        command[0].lower().endswith((".cmd", ".bat")) or not command[0].lower().endswith(".exe")
+    )
     proc = subprocess.run(
         command,
         cwd=str(cwd),
+        input=input_text,
+        stdin=subprocess.DEVNULL if input_text is None else None,
         text=True,
         capture_output=True,
+        shell=use_shell,
         timeout=timeout,
         check=False,
     )

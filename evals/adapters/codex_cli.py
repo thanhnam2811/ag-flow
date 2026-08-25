@@ -19,9 +19,9 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
     ]
     if model:
         command += ["--model", model]
-    command.append(prompt)
+    command.append("-")
 
-    stdout, stderr, latency_ms = run_command(command, cwd, timeout)
+    stdout, stderr, latency_ms = run_command(command, cwd, timeout, input_text=prompt)
     events = parse_jsonl(stdout)
     final_text = ""
     usage = usage_dict()
