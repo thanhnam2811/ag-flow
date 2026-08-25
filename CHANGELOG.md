@@ -19,8 +19,11 @@ The project follows Semantic Versioning once tagged releases begin.
 - Project contribution and security documentation
 - Draft 2020-12 JSON Schema for bounded Work Packages
 - Canonical schema-validated Work Package example
-- Lightweight repository validator for Agent Skill frontmatter, relative Markdown links, schema validity, and examples
+- Lightweight repository validator for Agent Skill frontmatter, relative Markdown links, schema validity, examples, and structured fixtures
 - GitHub Actions validation on pushes to `main` and pull requests
+- Three canonical route case studies: Direct, Guided, and Orchestrated
+- Machine-readable YAML fixtures for all 25 routing cases and 12 adversarial cases
+- Fixture validation for required fields, route enums, list types, versions, and unique IDs
 
 ## [0.1.0] - 2026-08-25
 
