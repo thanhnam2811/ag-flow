@@ -67,7 +67,7 @@ def _extract_envelope(stdout: str) -> tuple[str, dict[str, Any], str | None]:
     raise RuntimeError(f"Agy output did not contain a recognized result text: {stdout[:1000]}")
 
 
-def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+def _invoke(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[str, dict[str, int], float, dict[str, Any]]:
     binary = require_binary("agy")
     command = [binary, "-p", prompt, "--output-format", "json"]
     if model:
@@ -84,4 +84,14 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
         "session_id": session_id,
         "stderr": stderr[-1000:] if stderr else "",
     }
+    return result_text, usage, latency_ms, meta
+
+
+def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    result_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout)
     return parse_json_text(result_text), usage, latency_ms, meta
+
+
+def run_task(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    result_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout)
+    return {"final_message": result_text}, usage, latency_ms, meta
