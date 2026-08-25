@@ -103,7 +103,42 @@ Three end-to-end examples document the route boundaries and expected verificatio
 - [`examples/02-guided-route/`](examples/02-guided-route/) — subsystem cache refactor; explore and plan, but execute sequentially.
 - [`examples/03-orchestrated-route/`](examples/03-orchestrated-route/) — auth token migration with explicit non-overlapping work packages and Level 3 review.
 
-These examples are intentionally about **why a route is justified**, not just what steps an agent performs.
+## Structured behavioral fixtures
+
+Machine-readable fixtures turn the human-readable test corpus into benchmark inputs:
+
+- [`tests/fixtures/routing-cases.yaml`](tests/fixtures/routing-cases.yaml) — 25 routing cases
+- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 12 adversarial cases
+
+Fixture fields include `id`, `prompt`, `repo_state_mock`, `expected_route`, `risk_factors`, and `forbidden_actions`; adversarial cases can also define `expected_behaviors`.
+
+## Empirical benchmark harness
+
+[`evals/run_benchmarks.py`](evals/run_benchmarks.py) runs the structured corpus against OpenAI, Anthropic, or Gemini while keeping model identifiers user-supplied rather than hard-coded.
+
+Dry-run the corpus without API calls:
+
+```bash
+python evals/run_benchmarks.py --dry-run
+```
+
+Example provider runs:
+
+```bash
+OPENAI_API_KEY=... python evals/run_benchmarks.py --provider openai --model gpt-5.6-luna
+ANTHROPIC_API_KEY=... python evals/run_benchmarks.py --provider anthropic --model <model-id>
+GEMINI_API_KEY=... python evals/run_benchmarks.py --provider gemini --model gemini-3.7-flash
+```
+
+The harness currently measures:
+
+- routing accuracy
+- adversarial resilience through deterministic forbidden-action labels
+- desired behavior hits
+- provider-reported input/output token usage
+- per-case latency
+
+See [`evals/README.md`](evals/README.md) for methodology and limitations. Provider token counts are deliberately reported as **usage**, not claimed as end-to-end token savings. Proving token savings requires paired real-repository baseline runs.
 
 ## Reference contracts
 
@@ -114,17 +149,6 @@ These examples are intentionally about **why a route is justified**, not just wh
 - [`verification-levels.md`](references/verification-levels.md) — risk-aware verification depth
 - [`capability-fallbacks.md`](references/capability-fallbacks.md) — graceful degradation across runtimes
 
-## Structured behavioral fixtures
-
-The original human-readable test corpus is preserved in Markdown, while machine-readable fixtures are available for future eval tooling:
-
-- [`tests/fixtures/routing-cases.yaml`](tests/fixtures/routing-cases.yaml) — 25 routing cases
-- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 12 adversarial cases
-
-Fixture fields include `id`, `prompt`, `repo_state_mock`, `expected_route`, `risk_factors`, and `forbidden_actions`; adversarial cases can also define `expected_behaviors`.
-
-The validator checks fixture version, required fields, route enums, list types, and globally unique case IDs. This makes the corpus machine-readable without committing to an eval runtime yet.
-
 ## Validation
 
 The repository validates its own contracts on every push to `main` and every pull request. Checks include:
@@ -134,15 +158,18 @@ The repository validates its own contracts on every push to `main` and every pul
 - Work Package JSON Schema validity
 - canonical Work Package example
 - structured routing/adversarial fixture shape
+- Python helper compilation
+- benchmark corpus dry-run
 
 Run locally:
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python scripts/validate.py
+python evals/run_benchmarks.py --dry-run
 ```
 
-The validation layer intentionally stays small: one Python script plus `PyYAML` and `jsonschema`, with no project-specific CLI.
+The validation/eval layer intentionally stays small: Python stdlib plus `PyYAML` and `jsonschema`, with no project-specific CLI or provider SDK dependency.
 
 ## Design principles
 
@@ -154,6 +181,7 @@ The validation layer intentionally stays small: one Python script plus `PyYAML` 
 - Preserve project-native instructions such as `AGENTS.md` and `CLAUDE.md`.
 - Keep core skills runtime-agnostic; isolate capability-specific fallbacks.
 - Report deltas, evidence, and unresolved risks instead of chronological agent logs.
+- Do not promote a metric beyond what the benchmark actually measures.
 
 ## Repository layout
 
@@ -171,6 +199,9 @@ ag-flow/
 │   ├── fixtures/
 │   ├── routing-cases.md
 │   └── adversarial-cases.md
+├── evals/
+│   ├── README.md
+│   └── run_benchmarks.py
 ├── scripts/
 │   └── validate.py
 ├── .github/workflows/ci.yml
@@ -194,4 +225,4 @@ ag-flow is released under the [MIT License](LICENSE).
 
 ## Status
 
-`ag-flow` is currently **pre-1.0**. The next milestone is empirical evaluation of the structured fixtures across real coding-agent runtimes; new workflow skills should be added only when evidence shows a repeated gap.
+`ag-flow` is currently **pre-1.0**. The benchmark harness now provides repeatable model-level routing measurements; the next proof layer is paired real-repository execution comparing ag-flow against explicit baselines for context cost, conflicts, and completion quality.
