@@ -6,7 +6,7 @@ from typing import Any
 from .cli_common import parse_json_text, parse_jsonl, require_binary, run_command, usage_dict
 
 
-def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+def _invoke(prompt: str, model: str | None, cwd: Path, timeout: int, sandbox: str) -> tuple[str, dict[str, int], float, dict[str, Any]]:
     binary = require_binary("codex")
     command = [
         binary,
@@ -15,7 +15,7 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
         "--json",
         "--skip-git-repo-check",
         "--sandbox",
-        "read-only",
+        sandbox,
     ]
     if model:
         command += ["--model", model]
@@ -46,6 +46,15 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
     if not final_text:
         raise RuntimeError("Codex JSONL did not contain a final agent_message")
 
-    prediction = parse_json_text(final_text)
     meta = {"tool_events": tool_events, "stderr": stderr[-1000:] if stderr else ""}
-    return prediction, usage, latency_ms, meta
+    return final_text, usage, latency_ms, meta
+
+
+def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    final_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout, "read-only")
+    return parse_json_text(final_text), usage, latency_ms, meta
+
+
+def run_task(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    final_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout, "workspace-write")
+    return {"final_message": final_text}, usage, latency_ms, meta
