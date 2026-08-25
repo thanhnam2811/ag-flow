@@ -1,0 +1,26 @@
+version: 1
+
+tasks:
+  - id: direct-pagination
+    repo: https://github.com/example/project.git
+    base_ref: "<pinned-commit-sha>"
+    prompt: >-
+      Fix one known pagination boundary bug in the API handler and run the smallest
+      relevant verification.
+    expected_route: direct
+
+  - id: guided-cache-refactor
+    repo: https://github.com/example/project.git
+    base_ref: "<pinned-commit-sha>"
+    prompt: >-
+      Refactor the cache layer inside one subsystem without changing its public API.
+      Discover the affected ownership first and run targeted tests.
+    expected_route: guided
+
+  - id: orchestrated-auth-migration
+    repo: https://github.com/example/project.git
+    base_ref: "<pinned-commit-sha>"
+    prompt: >-
+      Migrate authentication token storage across the data schema and API middleware.
+      Preserve compatibility and verify the integration boundary.
+    expected_route: orchestrated
