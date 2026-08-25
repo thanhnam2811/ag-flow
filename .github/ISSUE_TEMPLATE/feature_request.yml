@@ -1,0 +1,37 @@
+name: Feature request
+description: Propose an improvement to ag-flow
+title: "[Feature]: "
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What workflow problem or missing capability are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful change.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example prompts or scenarios
+      description: Concrete routing or execution examples are especially helpful.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Primary goal
+      options:
+        - Reduce token/context usage
+        - Improve correctness
+        - Improve verification confidence
+        - Improve runtime portability
+        - Improve usability
+        - Add a new workflow primitive
+    validations:
+      required: true
