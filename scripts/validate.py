@@ -6,6 +6,7 @@ Checks:
 - relative Markdown links
 - JSON Schema validity
 - canonical Work Package YAML example against the schema
+- structured routing/adversarial fixture shape and identifiers
 """
 
 from __future__ import annotations
@@ -23,8 +24,13 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT / "skills"
 SCHEMA_PATH = ROOT / "references" / "schemas" / "work-package.schema.json"
 EXAMPLE_PATH = ROOT / "references" / "examples" / "work-package.example.yaml"
+FIXTURE_PATHS = [
+    ROOT / "tests" / "fixtures" / "routing-cases.yaml",
+    ROOT / "tests" / "fixtures" / "adversarial-cases.yaml",
+]
 
 LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
+ROUTES = {"direct", "guided", "orchestrated"}
 
 
 def fail(errors: list[str], message: str) -> None:
@@ -107,7 +113,7 @@ def validate_work_package_schema(errors: list[str]) -> None:
 
     try:
         Draft202012Validator.check_schema(schema)
-    except Exception as exc:  # jsonschema exposes several schema error subclasses
+    except Exception as exc:
         fail(errors, f"{SCHEMA_PATH.relative_to(ROOT)}: invalid JSON Schema: {exc}")
         return
 
@@ -123,11 +129,61 @@ def validate_work_package_schema(errors: list[str]) -> None:
         fail(errors, f"{EXAMPLE_PATH.relative_to(ROOT)}:{location}: {error.message}")
 
 
+def validate_fixtures(errors: list[str]) -> None:
+    seen_ids: set[str] = set()
+    required = {"id", "prompt", "repo_state_mock", "expected_route", "risk_factors", "forbidden_actions"}
+
+    for path in FIXTURE_PATHS:
+        rel = path.relative_to(ROOT)
+        try:
+            doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except (OSError, yaml.YAMLError) as exc:
+            fail(errors, f"{rel}: cannot load fixture file: {exc}")
+            continue
+
+        if not isinstance(doc, dict) or doc.get("version") != 1 or not isinstance(doc.get("cases"), list):
+            fail(errors, f"{rel}: expected version: 1 and a cases list")
+            continue
+
+        for index, case in enumerate(doc["cases"], start=1):
+            prefix = f"{rel}:case[{index}]"
+            if not isinstance(case, dict):
+                fail(errors, f"{prefix}: case must be a mapping")
+                continue
+
+            missing = required - case.keys()
+            if missing:
+                fail(errors, f"{prefix}: missing fields: {', '.join(sorted(missing))}")
+                continue
+
+            case_id = case["id"]
+            if not isinstance(case_id, str) or not case_id:
+                fail(errors, f"{prefix}: id must be a non-empty string")
+            elif case_id in seen_ids:
+                fail(errors, f"{prefix}: duplicate id '{case_id}'")
+            else:
+                seen_ids.add(case_id)
+
+            if case["expected_route"] not in ROUTES:
+                fail(errors, f"{prefix}: expected_route must be one of {sorted(ROUTES)}")
+
+            for field in ("risk_factors", "forbidden_actions"):
+                value = case[field]
+                if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+                    fail(errors, f"{prefix}: {field} must be a list of strings")
+
+            if "expected_behaviors" in case:
+                value = case["expected_behaviors"]
+                if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+                    fail(errors, f"{prefix}: expected_behaviors must be a list of strings")
+
+
 def main() -> int:
     errors: list[str] = []
     validate_skill_frontmatter(errors)
     validate_markdown_links(errors)
     validate_work_package_schema(errors)
+    validate_fixtures(errors)
 
     if errors:
         print(f"ag-flow validation failed with {len(errors)} error(s):", file=sys.stderr)
