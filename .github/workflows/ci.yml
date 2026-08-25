@@ -29,7 +29,14 @@ jobs:
         run: python scripts/validate.py
 
       - name: Compile Python helpers
-        run: python -m py_compile scripts/validate.py evals/run_benchmarks.py
+        run: >-
+          python -m py_compile
+          scripts/validate.py
+          evals/run_benchmarks.py
+          evals/adapters/cli_common.py
+          evals/adapters/codex_cli.py
+          evals/adapters/claude_cli.py
+          evals/adapters/agy_cli.py
 
       - name: Dry-run benchmark corpus
         run: python evals/run_benchmarks.py --dry-run
