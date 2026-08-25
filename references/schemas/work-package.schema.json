@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/thanhnam2811/ag-flow/blob/main/references/schemas/work-package.schema.json",
+  "title": "AgFlowWorkPackage",
+  "description": "Schema for bounded coding work packages in ag-flow.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["goal", "ownership", "acceptance", "verification", "escalate_if"],
+  "properties": {
+    "goal": {
+      "type": "string",
+      "minLength": 5
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["writable"],
+      "properties": {
+        "writable": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbidden_or_shared": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relevant_files": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "relevant_symbols": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "upstream_decisions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "acceptance": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "verification": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "escalate_if": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "return": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["changed", "verification", "interface_facts", "unresolved"]
+      },
+      "uniqueItems": true
+    }
+  }
+}
