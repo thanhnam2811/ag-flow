@@ -1,0 +1,46 @@
+goal: Add refresh-token rotation without changing the public login response shape
+
+ownership:
+  writable:
+    - src/auth/refresh.ts
+    - tests/auth/refresh.test.ts
+  forbidden_or_shared:
+    - src/auth/types.ts
+    - src/db/schema.sql
+
+context:
+  relevant_files:
+    - src/auth/refresh.ts
+    - src/auth/types.ts
+    - tests/auth/refresh.test.ts
+  relevant_symbols:
+    - rotateRefreshToken
+    - RefreshTokenPayload
+  upstream_decisions:
+    - Refresh tokens remain HTTP-only cookies
+    - Public login response types are unchanged
+
+interfaces:
+  - rotateRefreshToken must continue returning RefreshTokenPayload
+
+constraints:
+  - Do not modify database schema
+  - Preserve existing token expiry semantics
+
+acceptance:
+  - Reusing a rotated refresh token is rejected
+  - A valid refresh token produces exactly one replacement token
+
+verification:
+  - Run the targeted refresh-token test suite
+  - Run the project type checker
+
+escalate_if:
+  - Token rotation requires a schema change
+  - Existing public response types cannot be preserved
+
+return:
+  - changed
+  - verification
+  - interface_facts
+  - unresolved
