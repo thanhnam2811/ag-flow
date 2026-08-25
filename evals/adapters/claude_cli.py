@@ -7,7 +7,7 @@ from typing import Any
 from .cli_common import parse_json_text, require_binary, run_command, usage_dict
 
 
-def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+def _invoke(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[str, dict[str, int], float, dict[str, Any]]:
     binary = require_binary("claude")
     command = [binary, "-p", prompt, "--output-format", "json"]
     if model:
@@ -21,7 +21,6 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
 
     result_text = envelope.get("result")
     if not isinstance(result_text, str):
-        # Some versions may return content-like structures. Keep the fallback narrow.
         content = envelope.get("content")
         if isinstance(content, str):
             result_text = content
@@ -39,4 +38,14 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
         "duration_ms": envelope.get("duration_ms"),
         "stderr": stderr[-1000:] if stderr else "",
     }
+    return result_text, usage, latency_ms, meta
+
+
+def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    result_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout)
     return parse_json_text(result_text), usage, latency_ms, meta
+
+
+def run_task(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
+    result_text, usage, latency_ms, meta = _invoke(prompt, model, cwd, timeout)
+    return {"final_message": result_text}, usage, latency_ms, meta
