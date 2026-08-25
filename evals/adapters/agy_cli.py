@@ -7,39 +7,12 @@ from typing import Any
 from .cli_common import parse_json_text, require_binary, run_command, usage_dict
 
 
-def _extract_json_object(stdout: str) -> dict[str, Any]:
-    """Parse Agy JSON output defensively.
-
-    Agy headless output has had versions where strict JSON formatting was imperfect,
-    so first try full JSON, then fall back to the last parseable JSON line.
-    """
-    try:
-        value = json.loads(stdout)
-        if isinstance(value, dict):
-            return value
-    except json.JSONDecodeError:
-        pass
-
-    for line in reversed(stdout.splitlines()):
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            value = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if isinstance(value, dict):
-            return value
-    raise RuntimeError(f"Agy output did not contain a parseable JSON object: {stdout[:1000]}")
-
-
-def _result_text(envelope: dict[str, Any]) -> str:
+def _try_result_text(envelope: dict[str, Any]) -> str | None:
     for key in ("result", "response", "text", "output"):
         value = envelope.get(key)
         if isinstance(value, str) and value.strip():
             return value
 
-    # Handle common nested response/content shapes without depending on one version.
     for container_key in ("message", "content"):
         container = envelope.get(container_key)
         if isinstance(container, dict):
@@ -49,8 +22,49 @@ def _result_text(envelope: dict[str, Any]) -> str:
                     return value
         elif isinstance(container, str) and container.strip():
             return container
+    return None
 
-    raise RuntimeError("Agy JSON output did not expose a recognized result text field")
+
+def _extract_envelope(stdout: str) -> tuple[str, dict[str, Any], str | None]:
+    try:
+        val = json.loads(stdout)
+        if isinstance(val, dict):
+            text = _try_result_text(val)
+            if text:
+                stats = val.get("stats") or val.get("usage") or {}
+                return text, stats, val.get("session_id") or val.get("sessionId")
+    except Exception:
+        pass
+
+    parsed_objects: list[dict[str, Any]] = []
+    for line in stdout.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            val = json.loads(line)
+            if isinstance(val, dict):
+                parsed_objects.append(val)
+        except Exception:
+            continue
+
+    for obj in reversed(parsed_objects):
+        text = _try_result_text(obj)
+        if text:
+            stats = obj.get("stats") or obj.get("usage") or {}
+            if not stats:
+                for o in reversed(parsed_objects):
+                    if o.get("stats") or o.get("usage"):
+                        stats = o.get("stats") or o.get("usage") or {}
+                        break
+            return text, stats, obj.get("session_id") or obj.get("sessionId")
+
+    for line in reversed(stdout.splitlines()):
+        line = line.strip()
+        if line.startswith("{") and "route" in line:
+            return line, {}, None
+
+    raise RuntimeError(f"Agy output did not contain a recognized result text: {stdout[:1000]}")
 
 
 def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
@@ -60,15 +74,14 @@ def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[s
         command += ["--model", model]
 
     stdout, stderr, latency_ms = run_command(command, cwd, timeout)
-    envelope = _extract_json_object(stdout)
-    stats = envelope.get("stats") or envelope.get("usage") or {}
+    result_text, stats, session_id = _extract_envelope(stdout)
     usage = usage_dict(
         stats.get("input_tokens", stats.get("prompt_tokens", stats.get("promptTokenCount", 0))),
         stats.get("output_tokens", stats.get("completion_tokens", stats.get("candidatesTokenCount", 0))),
         stats.get("cached_tokens", stats.get("cache_read_input_tokens", 0)),
     )
     meta = {
-        "session_id": envelope.get("session_id") or envelope.get("sessionId"),
+        "session_id": session_id,
         "stderr": stderr[-1000:] if stderr else "",
     }
-    return parse_json_text(_result_text(envelope)), usage, latency_ms, meta
+    return parse_json_text(result_text), usage, latency_ms, meta
