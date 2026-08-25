@@ -1,78 +1,135 @@
 # Empirical benchmarks
 
-The benchmark harness turns ag-flow's structured fixtures into repeatable model evaluations without coupling the repository to one SDK, model family, or hosted eval platform.
+ag-flow benchmarks are **CLI-first**. They run through the coding-agent runtimes people actually use, authenticated by existing subscription/session login instead of requiring separate API keys.
+
+Supported runtimes:
+
+- Codex CLI (`codex`)
+- Claude Code CLI (`claude`)
+- Antigravity CLI (`agy`)
+
+The harness stays model-agnostic: omit `--model` to use the CLI's configured default, or pass a runtime-supported model identifier explicitly.
 
 ## What it measures
 
-The initial harness records:
+The fixture benchmark records:
 
-- **Routing accuracy** — exact match against `expected_route` for routing fixtures.
-- **Adversarial resilience** — whether the model avoids canonical `forbidden_actions` in adversarial fixtures.
-- **Desired behavior hits** — which canonical `expected_behaviors` appear in the model's action plan.
-- **Token usage** — input/output usage when the provider returns token metadata.
-- **Latency** — wall-clock request latency per case.
+- **Routing accuracy** — exact match against `expected_route`.
+- **Adversarial resilience** — whether canonical `forbidden_actions` are avoided.
+- **Desired behavior hit rate** — canonical expected behaviors present in the action plan.
+- **Provider-reported usage** — input/output/cached tokens when the CLI exposes them.
+- **Tool events** — when the runtime exposes structured tool events.
+- **Latency** — wall-clock time per case.
 
-These metrics are intentionally separate. A route can be correct while verification depth or delegation behavior is poor.
+Usage fields are provider-native and are not assumed to be perfectly comparable across runtimes.
 
 ## Dry run
 
-Dry run makes no network requests and requires no API key:
+CI uses dry-run mode. It imports every adapter and loads all fixtures without launching any external agent:
 
 ```bash
 python evals/run_benchmarks.py --dry-run
 ```
 
-Filter by suite or limit cases:
+Filter the corpus:
 
 ```bash
 python evals/run_benchmarks.py --dry-run --suite adversarial --limit 5
 ```
 
-## OpenAI
+## Codex CLI
 
-Set an API key, then supply the model you want to measure:
-
-```bash
-export OPENAI_API_KEY=...
-python evals/run_benchmarks.py \
-  --provider openai \
-  --model gpt-5.6-luna
-```
-
-The adapter uses the Responses API. Model identifiers are not hard-coded by ag-flow.
-
-## Anthropic
+Authenticate Codex normally with your ChatGPT/Codex account, then run:
 
 ```bash
-export ANTHROPIC_API_KEY=...
 python evals/run_benchmarks.py \
-  --provider anthropic \
-  --model <anthropic-model-id>
+  --runtime codex \
+  --suite all
 ```
 
-## Gemini
+Optional model override:
 
 ```bash
-export GEMINI_API_KEY=...
 python evals/run_benchmarks.py \
-  --provider gemini \
-  --model gemini-3.7-flash
+  --runtime codex \
+  --model <codex-model-id>
 ```
+
+The adapter uses `codex exec --ephemeral --json` in a read-only sandbox and extracts the final agent message plus `turn.completed` usage when available.
+
+## Claude Code CLI
+
+Authenticate Claude Code normally, then run:
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime claude
+```
+
+Optional model override:
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime claude \
+  --model <claude-model-id>
+```
+
+The adapter uses headless print mode with JSON output and reads usage/turn metadata when exposed by the installed CLI version.
+
+## Antigravity CLI (Agy)
+
+Authenticate `agy` normally through Antigravity/Google Sign-In, then run:
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime agy
+```
+
+Optional model override if supported by your installed Agy version:
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime agy \
+  --model <agy-model-id>
+```
+
+The adapter invokes Agy headlessly with `-p` and `--output-format json`. Parsing is defensive because some Agy releases have emitted imperfect strict-JSON output.
+
+## Workspace
+
+By default the agent runs with the current directory as its workspace. Override it with:
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime codex \
+  --workspace /path/to/repo
+```
+
+The current fixture suite is a routing-policy benchmark, so it embeds the adaptive-routing policy in the prompt. The next empirical layer should use real repository tasks and compare paired runs in isolated worktrees.
+
+## Paired real-repo benchmark
+
+The meaningful end-to-end experiment is:
+
+```text
+same task + same repo + same runtime + same model
+
+A: vanilla coding-agent CLI
+B: coding-agent CLI with ag-flow installed/enabled
+```
+
+Compare task success, verification evidence, delegation/tool activity, wall time, provider-reported usage, and repository delta. Do not call request-token differences "token savings" until the paired runs have comparable task outcomes.
 
 ## Results
 
-By default the runner writes:
+By default:
 
 ```text
 evals/results/latest.json
 ```
 
-Use `--output` to keep named benchmark snapshots outside the ignored results directory when publishing a curated result.
+Use `--output` for named snapshots. `evals/results/` is ignored by default so repeated local benchmarks do not pollute the repository.
 
-Each case stores the normalized decision, score, provider usage, and latency. The summary aggregates routing accuracy, adversarial resilience, total tokens, and median latency.
+## Scoring limitation
 
-## Important limitation
-
-Adversarial resilience currently uses deterministic action-label matching. That makes the score reproducible and cheap, but it is not a semantic judge. A later benchmark revision may add an optional independent judge, provided the extra judge cost and bias are reported separately rather than hidden inside the headline score.
-
-Likewise, token counts are provider-reported request usage. They do **not** yet prove end-to-end coding-task token savings versus a full-context baseline. That comparison requires paired real-repository runs and belongs in a later benchmark layer.
+Adversarial resilience uses deterministic action-label matching. This is cheap and reproducible, but it is not a semantic judge. If a future evaluator adds an independent LLM judge, judge cost and model bias should be reported separately from the primary score.
