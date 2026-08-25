@@ -114,31 +114,39 @@ Fixture fields include `id`, `prompt`, `repo_state_mock`, `expected_route`, `ris
 
 ## Empirical benchmark harness
 
-[`evals/run_benchmarks.py`](evals/run_benchmarks.py) runs the structured corpus against OpenAI, Anthropic, or Gemini while keeping model identifiers user-supplied rather than hard-coded.
+[`evals/run_benchmarks.py`](evals/run_benchmarks.py) is **CLI-first** and uses existing subscription/session authentication instead of separate API keys.
 
-Dry-run the corpus without API calls:
+Supported runtimes:
+
+```text
+Codex CLI      → codex
+Claude Code    → claude
+Antigravity    → agy
+```
+
+Dry-run without launching external agents:
 
 ```bash
 python evals/run_benchmarks.py --dry-run
 ```
 
-Example provider runs:
+Run against a logged-in CLI:
 
 ```bash
-OPENAI_API_KEY=... python evals/run_benchmarks.py --provider openai --model gpt-5.6-luna
-ANTHROPIC_API_KEY=... python evals/run_benchmarks.py --provider anthropic --model <model-id>
-GEMINI_API_KEY=... python evals/run_benchmarks.py --provider gemini --model gemini-3.7-flash
+python evals/run_benchmarks.py --runtime codex
+python evals/run_benchmarks.py --runtime claude
+python evals/run_benchmarks.py --runtime agy
 ```
 
-The harness currently measures:
+Optionally pin a runtime-supported model:
 
-- routing accuracy
-- adversarial resilience through deterministic forbidden-action labels
-- desired behavior hits
-- provider-reported input/output token usage
-- per-case latency
+```bash
+python evals/run_benchmarks.py --runtime codex --model <model-id>
+```
 
-See [`evals/README.md`](evals/README.md) for methodology and limitations. Provider token counts are deliberately reported as **usage**, not claimed as end-to-end token savings. Proving token savings requires paired real-repository baseline runs.
+The harness records routing accuracy, adversarial resilience, desired behavior hits, runtime-reported token/cache usage when available, tool-event counts when exposed, and wall-clock latency.
+
+See [`evals/README.md`](evals/README.md) for methodology and limitations. Usage is deliberately reported as **provider-native usage**, not claimed as cross-runtime cost equivalence or end-to-end token savings. The next proof layer is paired real-repository runs: vanilla CLI vs the same CLI with ag-flow.
 
 ## Reference contracts
 
@@ -158,7 +166,7 @@ The repository validates its own contracts on every push to `main` and every pul
 - Work Package JSON Schema validity
 - canonical Work Package example
 - structured routing/adversarial fixture shape
-- Python helper compilation
+- Python helper and CLI-adapter compilation
 - benchmark corpus dry-run
 
 Run locally:
@@ -200,6 +208,10 @@ ag-flow/
 │   ├── routing-cases.md
 │   └── adversarial-cases.md
 ├── evals/
+│   ├── adapters/
+│   │   ├── codex_cli.py
+│   │   ├── claude_cli.py
+│   │   └── agy_cli.py
 │   ├── README.md
 │   └── run_benchmarks.py
 ├── scripts/
@@ -225,4 +237,4 @@ ag-flow is released under the [MIT License](LICENSE).
 
 ## Status
 
-`ag-flow` is currently **pre-1.0**. The benchmark harness now provides repeatable model-level routing measurements; the next proof layer is paired real-repository execution comparing ag-flow against explicit baselines for context cost, conflicts, and completion quality.
+`ag-flow` is currently **pre-1.0**. The benchmark harness now measures the same routing corpus through real coding-agent CLIs; the next empirical proof is paired real-repository execution comparing vanilla runtime behavior against the same runtime with ag-flow enabled.
