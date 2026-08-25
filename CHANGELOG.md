@@ -24,10 +24,16 @@ The project follows Semantic Versioning once tagged releases begin.
 - Three canonical route case studies: Direct, Guided, and Orchestrated
 - Machine-readable YAML fixtures for all 25 routing cases and 12 adversarial cases
 - Fixture validation for required fields, route enums, list types, versions, and unique IDs
-- Lightweight empirical benchmark harness for OpenAI, Anthropic, and Gemini
-- Routing accuracy, adversarial resilience, desired-behavior, token-usage, and latency metrics
-- API-free benchmark dry-run and CI compilation checks
+- CLI-first empirical benchmark harness using existing subscription/session authentication
+- Runtime adapters for Codex CLI, Claude Code CLI, and Antigravity CLI (`agy`)
+- Routing accuracy, adversarial resilience, desired-behavior, provider-native usage, tool-event, and latency metrics
+- Network-free benchmark dry-run and CI compilation checks for all CLI adapters
 - Benchmark methodology documenting current limitations and the need for paired real-repository baselines before claiming token savings
+
+### Changed
+
+- Replaced the default OpenAI/Anthropic/Gemini API benchmark path with real coding-agent CLI runtimes
+- Kept model identifiers runtime-supplied instead of hard-coding model releases
 
 ## [0.1.0] - 2026-08-25
 
