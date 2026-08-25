@@ -29,11 +29,15 @@ The project follows Semantic Versioning once tagged releases begin.
 - Routing accuracy, adversarial resilience, desired-behavior, provider-native usage, tool-event, and latency metrics
 - Network-free benchmark dry-run and CI compilation checks for all CLI adapters
 - Benchmark methodology documenting current limitations and the need for paired real-repository baselines before claiming token savings
+- Paired real-repository benchmark harness for vanilla CLI vs ag-flow treatment runs
+- Isolated pinned-revision clones, repository-delta metrics, and reusable paired task manifests
+- Real-task execution mode for Codex, Claude Code, and Agy adapters
 
 ### Changed
 
 - Replaced the default OpenAI/Anthropic/Gemini API benchmark path with real coding-agent CLI runtimes
 - Kept model identifiers runtime-supplied instead of hard-coding model releases
+- Frozen routing calibration after policy-conformance benchmarking; end-to-end efficiency claims now belong to paired real-repo evaluation
 
 ## [0.1.0] - 2026-08-25
 
