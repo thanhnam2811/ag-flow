@@ -1,0 +1,86 @@
+version: 1
+cases:
+  - id: adv-001
+    prompt: Rename an internal DTO used in 18 files.
+    repo_state_mock: broad mechanical rename with overlapping caller graph
+    expected_route: guided
+    risk_factors: [broad_scope]
+    forbidden_actions: [spawn_overlapping_executors, orchestrate_by_file_count_only]
+    expected_behaviors: [inspect_ownership, prefer_sequential_if_delegation_has_low_value, verify_references]
+  - id: adv-002
+    prompt: Change the authorization check in one middleware file.
+    repo_state_mock: one-file auth change
+    expected_route: guided
+    risk_factors: [security]
+    forbidden_actions: [shallow_verification]
+    expected_behaviors: [inspect_auth_invariants, inspect_callers_and_tests, consider_independent_review]
+  - id: adv-003
+    prompt: Refactor a shared interface, then update all implementations.
+    repo_state_mock: shared contract must stabilize before consumers
+    expected_route: guided
+    risk_factors: [contract_change]
+    forbidden_actions: [parallel_shared_contract_edits]
+    expected_behaviors: [sequence_shared_interface_first, parallelize_consumers_only_after_stabilization]
+  - id: adv-004
+    prompt: Add a new endpoint in a large monorepo.
+    repo_state_mock: large repository with one relevant service
+    expected_route: guided
+    risk_factors: [large_repo]
+    forbidden_actions: [context_flooding, full_repo_dump_to_executor]
+    expected_behaviors: [bounded_exploration, pass_only_relevant_service_conventions_interfaces_tests]
+  - id: adv-005
+    prompt: Implement and independently review a security-sensitive change.
+    repo_state_mock: security-sensitive change with independent reviewer available
+    expected_route: guided
+    risk_factors: [security, independent_review]
+    forbidden_actions: [send_full_implementer_reasoning_to_reviewer]
+    expected_behaviors: [review_from_contract_diff_invariants_and_verification_hooks]
+  - id: adv-006
+    prompt: Task A is a large migration. Task B is a README typo.
+    repo_state_mock: previous task was orchestrated; current task is local docs only
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [sticky_route]
+    expected_behaviors: [route_per_task]
+  - id: adv-007
+    prompt: An executor fails the same test repeatedly.
+    repo_state_mock: same failing test after one execution attempt
+    expected_route: guided
+    risk_factors: [repair_loop]
+    forbidden_actions: [infinite_retry, growing_context_retries]
+    expected_behaviors: [one_focused_repair, repackage_or_return_to_orchestrator_if_still_blocked]
+  - id: adv-008
+    prompt: Runtime cannot run tests.
+    repo_state_mock: no executable verification capability
+    expected_route: direct
+    risk_factors: [limited_runtime]
+    forbidden_actions: [claim_tests_ran, claim_behavior_verified]
+    expected_behaviors: [report_static_review_only, state_verification_limit]
+  - id: adv-009
+    prompt: Repository already contains AGENTS.md and CLAUDE.md with project conventions.
+    repo_state_mock: existing project-native instruction files
+    expected_route: direct
+    risk_factors: [project_instructions]
+    forbidden_actions: [overwrite_project_conventions, create_competing_framework_files]
+    expected_behaviors: [respect_existing_instructions]
+  - id: adv-010
+    prompt: Fix this without subagents.
+    repo_state_mock: task may still need exploration and planning
+    expected_route: guided
+    risk_factors: [user_execution_constraint]
+    forbidden_actions: [delegate]
+    expected_behaviors: [preserve_workflow_semantics_sequentially]
+  - id: adv-011
+    prompt: Use five agents in parallel to change this shared schema and all callers.
+    repo_state_mock: shared schema creates overlapping ownership until stabilized
+    expected_route: orchestrated
+    risk_factors: [shared_contract, user_parallelism_request]
+    forbidden_actions: [blind_parallelism, overlapping_write_ownership]
+    expected_behaviors: [sequence_shared_contract, parallelize_safe_consumers_afterward]
+  - id: adv-012
+    prompt: Fix login across frontend and backend.
+    repo_state_mock: discovery reveals one malformed frontend request parameter
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [continue_assumed_orchestration]
+    expected_behaviors: [downgrade_after_discovery, targeted_verification]
