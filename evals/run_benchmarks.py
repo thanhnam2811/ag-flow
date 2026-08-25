@@ -8,10 +8,12 @@ Code CLI, and Antigravity CLI (agy).
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import importlib
 import json
 import statistics
 import sys
+import threading
 from pathlib import Path
 from typing import Any, Callable
 
@@ -142,6 +144,32 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def run_single_case(
+    case: dict[str, Any],
+    caller: Callable[..., tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]],
+    model: str | None,
+    workspace: Path,
+    timeout: int,
+) -> dict[str, Any]:
+    try:
+        prediction_raw, usage, latency_ms, meta = caller(
+            build_prompt(case), model, workspace, timeout
+        )
+        prediction = normalize_prediction(prediction_raw)
+        return {
+            "id": case["id"],
+            "suite": case["suite"],
+            "expected_route": case["expected_route"],
+            "prediction": prediction,
+            "score": score_case(case, prediction),
+            "usage": usage,
+            "latency_ms": latency_ms,
+            "meta": meta,
+        }
+    except Exception as exc:
+        return {"id": case["id"], "suite": case["suite"], "error": str(exc)}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ag-flow benchmarks through coding-agent CLIs")
     parser.add_argument("--runtime", choices=sorted(RUNTIMES), help="codex, claude, or agy")
@@ -149,6 +177,7 @@ def main() -> int:
     parser.add_argument("--workspace", default=".", help="Working directory passed to the coding-agent CLI")
     parser.add_argument("--suite", choices=["all", "routing", "adversarial"], default="all")
     parser.add_argument("--limit", type=int, default=0, help="Run only the first N selected cases")
+    parser.add_argument("--concurrency", "-j", type=int, default=1, help="Number of concurrent CLI workers (default: 1)")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--output", default="evals/results/latest.json")
     parser.add_argument("--dry-run", action="store_true", help="Load fixtures and adapters without invoking a CLI")
@@ -179,28 +208,26 @@ def main() -> int:
         parser.error(f"workspace does not exist or is not a directory: {workspace}")
 
     caller = load_runtime(args.runtime)
-    results: list[dict[str, Any]] = []
-    for index, case in enumerate(cases, 1):
-        try:
-            prediction_raw, usage, latency_ms, meta = caller(
-                build_prompt(case), args.model, workspace, args.timeout
-            )
-            prediction = normalize_prediction(prediction_raw)
-            result = {
-                "id": case["id"],
-                "suite": case["suite"],
-                "expected_route": case["expected_route"],
-                "prediction": prediction,
-                "score": score_case(case, prediction),
-                "usage": usage,
-                "latency_ms": latency_ms,
-                "meta": meta,
-            }
-        except Exception as exc:
-            result = {"id": case["id"], "suite": case["suite"], "error": str(exc)}
-        results.append(result)
-        status = "ERROR" if "error" in result else result["prediction"]["route"]
-        print(f"[{index}/{len(cases)}] {case['id']}: {status}", file=sys.stderr)
+    results: list[dict[str, Any]] = [None] * len(cases)  # type: ignore[list-item]
+    completed_count = 0
+    lock = threading.Lock()
+
+    def worker(index: int, case: dict[str, Any]) -> None:
+        nonlocal completed_count
+        res = run_single_case(case, caller, args.model, workspace, args.timeout)
+        results[index] = res
+        with lock:
+            completed_count += 1
+            status = "ERROR" if "error" in res else res["prediction"]["route"]
+            print(f"[{completed_count}/{len(cases)}] {case['id']}: {status}", file=sys.stderr)
+
+    if args.concurrency > 1:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.concurrency) as executor:
+            futures = [executor.submit(worker, i, c) for i, c in enumerate(cases)]
+            concurrent.futures.wait(futures)
+    else:
+        for i, c in enumerate(cases):
+            worker(i, c)
 
     report = {
         "runtime": args.runtime,

@@ -37,6 +37,17 @@ Filter the corpus:
 python evals/run_benchmarks.py --dry-run --suite adversarial --limit 5
 ```
 
+## Concurrency
+
+Accelerate benchmark execution by running multiple cases in parallel with `--concurrency` (or `-j`):
+
+```bash
+python evals/run_benchmarks.py \
+  --runtime codex \
+  --suite all \
+  --concurrency 4
+```
+
 ## Codex CLI
 
 Authenticate Codex normally with your ChatGPT/Codex account, then run:
