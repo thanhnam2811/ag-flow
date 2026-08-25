@@ -1,0 +1,43 @@
+---
+name: work-package-dispatch
+description: Split a complex implementation plan into bounded, non-overlapping work packages for parallel or isolated execution. Use only when delegation has a clear benefit.
+---
+
+# Work Package Dispatch
+
+Partition work by ownership and interfaces, not by arbitrary file count.
+
+## Dispatch gate
+
+Do not dispatch unless at least two workstreams can proceed with limited coordination or one isolated specialist task materially reduces context load.
+
+## Package contract
+
+Each package must include:
+
+- **Goal** — one concrete outcome.
+- **Ownership** — exact files/subsystem the executor may change.
+- **Forbidden/shared areas** — files reserved for orchestrator or another package.
+- **Context** — only relevant files, symbols, decisions, and upstream facts.
+- **Interfaces** — contracts with other packages.
+- **Constraints/invariants** — behavior that must remain true.
+- **Acceptance criteria** — observable completion conditions.
+- **Verification** — commands/checks expected from the executor.
+- **Escalation conditions** — when the executor must stop and return to the orchestrator.
+
+## Ownership rules
+
+- Avoid overlapping write ownership.
+- Assign shared integration files to exactly one owner, preferably the orchestrator.
+- Define dependency order when one package consumes another package's interface.
+- Parallelize only packages that are independent enough to merge safely.
+
+## Context discipline
+
+Never forward the full conversation or repository dump by default. Send a self-contained package with bounded context.
+
+## Runtime portability
+
+If subagents exist, dispatch packages to suitable executor roles. If parallelism is unavailable, execute the same packages sequentially while preserving ownership and package boundaries.
+
+Use `work-package-execution` as the executor contract.
