@@ -32,6 +32,10 @@ Each package must include:
 - Define dependency order when one package consumes another package's interface.
 - Parallelize only packages that are independent enough to merge safely.
 
+## Dispatch the ready frontier, not the whole graph
+
+Only applies when packages actually depend on each other. Dispatch just the packages whose prerequisites and shared interfaces are already settled, not the entire dependency graph at once. Example: A defines a shared contract, B consumes A, C is independent — initial frontier is `{A, C}`; dispatch B only once A is done and its interface is confirmed. If packages have no dependency between them, the whole set is already the frontier.
+
 ## Context discipline
 
 Never forward the full conversation or repository dump by default. Send a self-contained package with bounded context.
