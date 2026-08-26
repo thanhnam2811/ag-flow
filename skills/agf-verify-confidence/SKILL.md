@@ -7,6 +7,13 @@ description: Verify coding changes through execution with depth proportional to 
 
 Confidence must come from evidence, preferably execution.
 
+## Before any completion claim
+
+1. Identify which executable check actually proves the claim.
+2. Run it fresh — do not reuse a prior run's output or accept a subagent's self-report as-is.
+3. Inspect the output and exit status yourself.
+4. Claim only what that evidence supports.
+
 ## Verification levels
 
 ### Level 1 — self-check
@@ -40,7 +47,7 @@ Use when any of these apply:
 - orchestrated multi-package implementation
 - user explicitly requested independent review
 
-If the runtime supports subagents, use a fresh reviewer with only the task contract, relevant diff/context, and verification entry points. Otherwise perform a second-pass review separated from implementation reasoning.
+If the runtime supports subagents, use a fresh reviewer with only the task contract, relevant diff/context, and verification entry points. Otherwise perform a second-pass review separated from implementation reasoning. Executor-reported verification is input to this review, not a substitute for it — re-run or independently inspect the evidence rather than accepting the executor's claim.
 
 ## Reviewer contract
 
