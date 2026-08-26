@@ -67,24 +67,40 @@ def _extract_envelope(stdout: str) -> tuple[str, dict[str, Any], str | None]:
     raise RuntimeError(f"Agy output did not contain a recognized result text: {stdout[:1000]}")
 
 
-def _invoke(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[str, dict[str, int], float, dict[str, Any]]:
+def _invoke(
+    prompt: str, model: str | None, cwd: Path, timeout: int, max_retries: int = 2
+) -> tuple[str, dict[str, int], float, dict[str, Any]]:
     binary = require_binary("agy")
     command = [binary, "-p", prompt, "--output-format", "json"]
     if model:
         command += ["--model", model]
 
-    stdout, stderr, latency_ms = run_command(command, cwd, timeout)
-    result_text, stats, session_id = _extract_envelope(stdout)
-    usage = usage_dict(
-        stats.get("input_tokens", stats.get("prompt_tokens", stats.get("promptTokenCount", 0))),
-        stats.get("output_tokens", stats.get("completion_tokens", stats.get("candidatesTokenCount", 0))),
-        stats.get("cached_tokens", stats.get("cache_read_input_tokens", 0)),
-    )
-    meta = {
-        "session_id": session_id,
-        "stderr": stderr[-1000:] if stderr else "",
-    }
-    return result_text, usage, latency_ms, meta
+    total_latency_ms = 0.0
+    last_error: RuntimeError | None = None
+    for attempt in range(max_retries + 1):
+        stdout, stderr, latency_ms = run_command(command, cwd, timeout)
+        total_latency_ms += latency_ms
+        try:
+            result_text, stats, session_id = _extract_envelope(stdout)
+        except RuntimeError as exc:
+            last_error = exc
+            continue
+        usage = usage_dict(
+            stats.get("input_tokens", stats.get("prompt_tokens", stats.get("promptTokenCount", 0))),
+            stats.get("output_tokens", stats.get("completion_tokens", stats.get("candidatesTokenCount", 0))),
+            stats.get("cached_tokens", stats.get("cache_read_input_tokens", 0)),
+        )
+        meta = {
+            "session_id": session_id,
+            "stderr": stderr[-1000:] if stderr else "",
+            "retries": attempt,
+        }
+        return result_text, usage, total_latency_ms, meta
+
+    assert last_error is not None
+    raise RuntimeError(
+        f"agy returned no usable result after {max_retries + 1} attempt(s): {last_error}"
+    ) from last_error
 
 
 def run(prompt: str, model: str | None, cwd: Path, timeout: int) -> tuple[dict[str, Any], dict[str, int], float, dict[str, Any]]:
