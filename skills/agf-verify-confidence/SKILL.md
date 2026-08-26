@@ -26,6 +26,7 @@ Use for normal multi-file work:
 - lint/build slice
 - migration/schema validation where applicable
 - direct reproduction of the original failure or requested behavior
+- if the behavior-change test gate applied, confirm the test actually failed before the fix and passes after — not just that it currently passes
 
 ### Level 3 — independent review
 

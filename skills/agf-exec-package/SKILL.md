@@ -26,6 +26,10 @@ If a missing decision would change public interfaces, shared ownership, architec
 - Avoid unrelated cleanup and opportunistic refactors.
 - Prefer the smallest coherent implementation that satisfies acceptance criteria.
 
+## Behavior-change test gate
+
+If this package changes behavior and a focused test harness already exists for the touched area, prefer writing or identifying a failing test before implementing, when doing so materially reduces regression risk. Skip this for packages that only refactor, document, or configure without changing behavior, or where no test harness exists to extend — do not build one just to satisfy this gate.
+
 ## Self-verification
 
 Run the narrowest meaningful checks for the package: targeted tests, type checks, lint/build slices, or direct reproduction where appropriate.

@@ -33,6 +33,7 @@ The project follows Semantic Versioning once tagged releases begin.
 - Isolated pinned-revision clones, repository-delta metrics, and reusable paired task manifests
 - Real-task execution mode for Codex, Claude Code, and Agy adapters
 - `agf-spec-clarify` skill for gated requirement-ambiguity resolution, distinct from routing and implementation uncertainty
+- Behavior-change test gate in `agf-exec-package`/`agf-verify-confidence` (write/identify a failing test before implementing when a harness exists and it lowers regression risk); deliberately not promoted to a standalone TDD skill until the paired real-repo benchmark shows it changes outcomes
 
 ### Changed
 
