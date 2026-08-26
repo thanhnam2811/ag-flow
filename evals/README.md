@@ -141,6 +141,22 @@ evals/results/latest.json
 
 Use `--output` for named snapshots. `evals/results/` is ignored by default so repeated local benchmarks do not pollute the repository.
 
+### Latest full-suite run (43 cases, `-j 4`)
+
+Post-`agf-*`-rename, post-primitive-sharpening snapshot, run against the same routing/adversarial corpus through all three supported CLIs:
+
+| Runtime | Completed | Errors | Routing accuracy | Adversarial resilience | Desired-behavior hit rate |
+| --- | --- | --- | --- | --- | --- |
+| Codex CLI | 43/43 | 0 | 0.96 | 1.00 | 1.00 |
+| Claude Code CLI | 43/43 | 0 | 0.80 | 1.00 | 1.00 |
+| Antigravity CLI (`agy`) | 21/43 | 22 | 0.90 (of completed) | n/a (too few adversarial cases completed) | n/a |
+
+Notes:
+
+- The `agy` run was launched concurrently with the Codex and Claude runs against the same account and hit the CLI's own subscription quota mid-run (`Individual quota reached`); the errors are an external rate limit, not an ag-flow or adapter defect. Run `agy` on its own (not alongside other runtimes) for a representative full-suite number.
+- Misroutes were plausible model judgment calls on borderline cases (e.g. treating a high-risk-but-single-workstream change as `guided` instead of `orchestrated`, or a locally-scoped schema change as `direct` instead of `guided`), not policy contradictions — see `references/routing-matrix.md` for the rules being applied.
+- Routing accuracy varies by CLI/model, as expected for a policy-conformance benchmark rather than a fixed-model eval.
+
 ## Scoring limitation
 
 Adversarial resilience uses deterministic action-label matching. This is cheap and reproducible, but it is not a semantic judge. If a future evaluator adds an independent LLM judge, judge cost and model bias should be reported separately from the primary score.

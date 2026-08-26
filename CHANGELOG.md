@@ -36,6 +36,11 @@ The project follows Semantic Versioning once tagged releases begin.
 - Behavior-change test gate in `agf-exec-package`/`agf-verify-confidence` (write/identify a failing test before implementing when a harness exists and it lowers regression risk); deliberately not promoted to a standalone TDD skill until the paired real-repo benchmark shows it changes outcomes
 - 6 adversarial fixtures guarding the new skill-budget behavior: trivial-task skill ceiling, read-only discovery not needing clarification, requirement ambiguity not fixable by exploration, high risk not implying dispatch, no-subagent not changing route, and at most one routing question
 
+### Fixed
+
+- Stale pre-rename skill paths in `evals/run_benchmarks.py` and `evals/paired/run_paired.py` that made every real-CLI benchmark case fail with `FileNotFoundError` after the `agf-*` rename
+- Bounded retry in the Agy adapter (`evals/adapters/agy_cli.py`) for the CLI's intrinsic `CANCELED`/empty-response flakiness (~20-25% of calls), independent of concurrency
+
 ### Changed
 
 - Replaced the default OpenAI/Anthropic/Gemini API benchmark path with real coding-agent CLI runtimes
