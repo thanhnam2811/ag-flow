@@ -28,7 +28,7 @@ The main agent executes the same role transitions sequentially:
 3. bounded package execution passes
 4. independent second-pass verification
 
-Preserve package boundaries even when one agent performs every role.
+Preserve package boundaries even when one agent performs every role. If `agf-route-adaptive` set `needs.delegation: true` but the runtime has no subagents, do not reinterpret that as `false` — the packages and their ownership boundaries from `agf-dispatch-package` still apply, only the execution mechanism changes from parallel/isolated to sequential in the main agent.
 
 ### Runtime lacks a dedicated planning/todo tool
 
