@@ -51,14 +51,12 @@ If the runtime supports subagents, use a fresh reviewer with only the task contr
 
 ## Reviewer contract
 
-Verify:
+Verify through two lenses — internal reasoning, not a required output format:
 
-- acceptance criteria
-- interface compatibility
-- invariants
-- error/edge paths
-- tests and executable evidence
-- integration across packages
+- **Spec fidelity** — did we build what was requested? Acceptance criteria, missing/extra behavior.
+- **Engineering confidence** — invariants, interface compatibility, error/edge paths, integration across packages, executable evidence.
+
+A clean implementation of the wrong requirement should fail spec fidelity even when engineering confidence is high.
 
 Do not re-implement the feature unless a repair is required.
 
