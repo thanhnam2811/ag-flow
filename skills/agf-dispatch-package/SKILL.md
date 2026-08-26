@@ -1,5 +1,5 @@
 ---
-name: work-package-dispatch
+name: agf-dispatch-package
 description: Split a complex implementation plan into bounded, non-overlapping work packages for parallel or isolated execution. Use only when delegation has a clear benefit.
 ---
 
@@ -40,4 +40,4 @@ Never forward the full conversation or repository dump by default. Send a self-c
 
 If subagents exist, dispatch packages to suitable executor roles. If parallelism is unavailable, execute the same packages sequentially while preserving ownership and package boundaries.
 
-Use `work-package-execution` as the executor contract.
+Use `agf-exec-package` as the executor contract.

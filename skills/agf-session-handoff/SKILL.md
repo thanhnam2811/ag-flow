@@ -1,5 +1,5 @@
 ---
-name: session-handoff
+name: agf-session-handoff
 description: Persist the minimum durable state needed to resume an unfinished coding task without replaying the full conversation. Use when work spans sessions, context is becoming large, or another agent must continue later.
 ---
 

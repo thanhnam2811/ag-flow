@@ -1,5 +1,5 @@
 ---
-name: work-package-execution
+name: agf-exec-package
 description: Execute one bounded coding work package with strict ownership, minimal context expansion, self-verification, and concise handoff. Use for delegated or sequential package execution.
 ---
 

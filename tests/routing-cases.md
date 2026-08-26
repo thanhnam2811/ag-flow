@@ -1,6 +1,6 @@
 # Routing Cases
 
-These cases are a behavioral test corpus for `adaptive-routing`. Expected routes are guidance; implementations may choose a stronger path when repository evidence reveals additional risk.
+These cases are a behavioral test corpus for `agf-route-adaptive`. Expected routes are guidance; implementations may choose a stronger path when repository evidence reveals additional risk.
 
 | # | Prompt | Expected | Why |
 | --- | --- | --- | --- |

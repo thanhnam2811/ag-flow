@@ -38,6 +38,18 @@ The project follows Semantic Versioning once tagged releases begin.
 - Replaced the default OpenAI/Anthropic/Gemini API benchmark path with real coding-agent CLI runtimes
 - Kept model identifiers runtime-supplied instead of hard-coding model releases
 - Frozen routing calibration after policy-conformance benchmarking; end-to-end efficiency claims now belong to paired real-repo evaluation
+- **Breaking:** renamed every skill to the `agf-<domain>-<name>` convention to stay collision-safe when installed alongside other skill packs (e.g. Superpowers) that ship skills with the same short names. Directories keep only the new names; consumers pinned to old paths must update.
+
+  | Old | New |
+  | --- | --- |
+  | `adaptive-routing` | `agf-route-adaptive` |
+  | `codebase-exploration` | `agf-explore-code` |
+  | `implementation-planning` | `agf-plan-impl` |
+  | `session-handoff` | `agf-session-handoff` |
+  | `systematic-debugging` | `agf-debug-systematic` |
+  | `verification` | `agf-verify-confidence` |
+  | `work-package-dispatch` | `agf-dispatch-package` |
+  | `work-package-execution` | `agf-exec-package` |
 
 ## [0.1.0] - 2026-08-25
 

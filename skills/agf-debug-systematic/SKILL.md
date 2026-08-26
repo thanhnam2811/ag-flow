@@ -1,5 +1,5 @@
 ---
-name: systematic-debugging
+name: agf-debug-systematic
 description: Debug coding failures from reproducible evidence, hypotheses, and targeted experiments instead of speculative edits. Use for bugs, failing tests, regressions, flaky behavior, and unclear runtime errors.
 ---
 
@@ -22,8 +22,8 @@ Prefer evidence over edit-and-pray loops.
 - Distinguish cause, symptom, and secondary failure.
 - Preserve useful failing evidence until the fix is confirmed.
 - Expand scope only when evidence crosses a subsystem boundary.
-- If the bug is broad or context-heavy, use `codebase-exploration` before editing.
-- If the fix becomes multi-step or cross-system, hand off to `implementation-planning` and let `adaptive-routing` re-evaluate execution depth.
+- If the bug is broad or context-heavy, use `agf-explore-code` before editing.
+- If the fix becomes multi-step or cross-system, hand off to `agf-plan-impl` and let `agf-route-adaptive` re-evaluate execution depth.
 
 ## Flaky failures
 

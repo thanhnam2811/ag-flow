@@ -65,14 +65,16 @@ npx skills add thanhnam2811/ag-flow \
 
 | Skill | Responsibility |
 | --- | --- |
-| [`adaptive-routing`](skills/adaptive-routing/) | Select the cheapest reliable execution path per task |
-| [`codebase-exploration`](skills/codebase-exploration/) | Discover only repository context relevant to the task |
-| [`implementation-planning`](skills/implementation-planning/) | Turn findings into a dependency-aware plan |
-| [`work-package-dispatch`](skills/work-package-dispatch/) | Split complex work into bounded non-overlapping packages |
-| [`work-package-execution`](skills/work-package-execution/) | Execute one package with strict ownership and concise reporting |
-| [`verification`](skills/verification/) | Verify claims through execution with risk-aware depth |
-| [`systematic-debugging`](skills/systematic-debugging/) | Debug from evidence and hypotheses instead of speculative edits |
-| [`session-handoff`](skills/session-handoff/) | Persist only the minimum state needed to resume safely |
+| [`agf-route-adaptive`](skills/agf-route-adaptive/) | Classify a task, then select execution depth and which gates apply |
+| [`agf-explore-code`](skills/agf-explore-code/) | Discover only repository context relevant to the task |
+| [`agf-plan-impl`](skills/agf-plan-impl/) | Turn findings into a dependency-aware plan |
+| [`agf-dispatch-package`](skills/agf-dispatch-package/) | Split complex work into bounded non-overlapping packages |
+| [`agf-exec-package`](skills/agf-exec-package/) | Execute one package with strict ownership and concise reporting |
+| [`agf-verify-confidence`](skills/agf-verify-confidence/) | Verify claims through execution with risk-aware depth |
+| [`agf-debug-systematic`](skills/agf-debug-systematic/) | Debug from evidence and hypotheses instead of speculative edits |
+| [`agf-session-handoff`](skills/agf-session-handoff/) | Persist only the minimum state needed to resume safely |
+
+> Naming: `agf-<domain>-<name>` — grep-able, collision-safe across skill packs (e.g. avoids clashing with an unrelated `systematic-debugging` or `test-driven-development` skill from another pack). See [`CHANGELOG.md`](CHANGELOG.md) for the old → new mapping.
 
 ## Runtime model
 
@@ -196,6 +198,14 @@ The validation/eval layer intentionally stays small: Python stdlib plus `PyYAML`
 ```text
 ag-flow/
 ├── skills/
+│   ├── agf-route-adaptive/
+│   ├── agf-explore-code/
+│   ├── agf-plan-impl/
+│   ├── agf-dispatch-package/
+│   ├── agf-exec-package/
+│   ├── agf-verify-confidence/
+│   ├── agf-debug-systematic/
+│   └── agf-session-handoff/
 ├── references/
 │   ├── examples/
 │   └── schemas/

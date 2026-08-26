@@ -1,5 +1,5 @@
 ---
-name: codebase-exploration
+name: agf-explore-code
 description: Discover the minimum repository context needed to solve a coding task. Use when relevant files, symbols, dependencies, conventions, or boundaries are uncertain.
 ---
 

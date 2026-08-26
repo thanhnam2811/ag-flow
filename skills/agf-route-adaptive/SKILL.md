@@ -1,5 +1,5 @@
 ---
-name: adaptive-routing
+name: agf-route-adaptive
 description: Automatically classify a coding task by scope, uncertainty, risk, and parallelizability, then choose the cheapest reliable execution path. Use for non-trivial coding work when the user did not explicitly choose an execution strategy.
 ---
 
@@ -36,10 +36,10 @@ Use when the task is local, well understood, low risk, and can be verified cheap
 
 Use when the task spans multiple files, repository context is uncertain, or a short plan materially reduces mistakes.
 
-- Apply `codebase-exploration` if context is not already sufficient, including read-only provenance or ownership investigation.
-- Apply `implementation-planning` when ordering, interfaces, or acceptance criteria matter.
+- Apply `agf-explore-code` if context is not already sufficient, including read-only provenance or ownership investigation.
+- Apply `agf-plan-impl` when ordering, interfaces, or acceptance criteria matter.
 - Main agent executes unless delegation has a clear benefit.
-- Apply `verification` before claiming completion.
+- Apply `agf-verify-confidence` before claiming completion.
 - Prefer stronger verification over a heavier route when the work remains one coherent workstream but carries elevated risk.
 
 ### Orchestrated
@@ -50,7 +50,7 @@ High risk alone is not enough. A single billing, auth, migration, or other busin
 
 - Explore before partitioning.
 - Plan interfaces and dependencies centrally.
-- Apply `work-package-dispatch` only when package boundaries are clean.
+- Apply `agf-dispatch-package` only when package boundaries are clean.
 - Executors receive bounded context, not whole-session history.
 - Integrate centrally.
 - Apply independent verification for high-risk or broad changes.

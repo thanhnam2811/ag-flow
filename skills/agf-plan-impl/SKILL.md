@@ -1,5 +1,5 @@
 ---
-name: implementation-planning
+name: agf-plan-impl
 description: Convert repository findings and a coding request into an executable plan with dependencies, interfaces, acceptance criteria, and verification. Use when implementation spans multiple meaningful steps or architecture decisions.
 ---
 
@@ -32,4 +32,4 @@ For each meaningful step capture:
 
 A multi-step plan does not automatically justify multiple agents. Delegate only when work packages can be isolated with explicit ownership and the coordination cost is lower than sequential execution.
 
-For complex parallel work, hand the validated plan to `work-package-dispatch`.
+For complex parallel work, hand the validated plan to `agf-dispatch-package`.

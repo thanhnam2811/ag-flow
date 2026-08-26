@@ -1,5 +1,5 @@
 ---
-name: verification
+name: agf-verify-confidence
 description: Verify coding changes through execution with depth proportional to scope and risk. Use before claiming completion, especially for multi-file, high-risk, cross-system, or delegated work.
 ---
 
