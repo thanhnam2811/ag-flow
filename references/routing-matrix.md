@@ -6,7 +6,7 @@ Use this as guidance, not a rigid scoring system. Choose the cheapest path that 
 | --- | --- | --- | --- |
 | Scope | local | subsystem / multi-file | cross-system / broad |
 | Repository uncertainty | low | medium/high | medium/high with multiple boundaries |
-| Risk | low | low/medium | high, or broad integration risk |
+| Risk | low | any, if the work stays one coherent workstream | broad integration/cross-system risk (high risk alone is not enough) |
 | Parallel benefit | none | usually none | strong and cleanly partitionable |
 | Planning need | little | useful | required |
 | Independent review | optional | risk-dependent | normally required |
