@@ -120,3 +120,51 @@ Discovery shows a single malformed frontend request parameter.
 Expected behavior: downgrade to a local/direct fix and targeted verification.
 
 Failure: continue with the originally assumed orchestration plan.
+
+## 13. Trivial task, skill budget
+
+**Prompt:** Rename a local variable in one function for clarity.
+
+Expected behavior: route Direct, run only `agf-route-adaptive` + `agf-verify-confidence` Level 1.
+
+Failure: loading `agf-spec-clarify`, `agf-plan-impl`, or `agf-dispatch-package` for a change this small.
+
+## 14. Read-only discovery does not need clarification
+
+**Prompt:** Find out which module owns retry logic for outbound HTTP calls; do not change anything.
+
+Expected behavior: use `agf-explore-code` alone — there is no requirement decision pending, only an ownership question the repository can answer.
+
+Failure: invoking `agf-spec-clarify` for a question the codebase already answers.
+
+## 15. Requirement ambiguity is not fixed by reading more code
+
+**Prompt:** Add support for exporting reports, but it is unclear which formats should be supported.
+
+Expected behavior: invoke `agf-spec-clarify` — no amount of repository exploration tells you which export formats the user wants.
+
+Failure: guessing a format silently, or treating `agf-explore-code` as sufficient because the codebase has no export feature to inspect.
+
+## 16. High risk does not imply dispatch
+
+**Prompt:** Rewrite the token-expiry check in the auth middleware; the bug is already reproduced in one file.
+
+Expected behavior: stay single-executor, raise verification to Level 3 for the security-sensitive change.
+
+Failure: spawning multiple executors or dispatching packages because the change is high-risk.
+
+## 17. No-subagent runtime does not change the route
+
+**Prompt:** Split this module into three packages with stable interfaces; do it yourself, no subagents.
+
+Expected behavior: route stays Orchestrated with `needs.delegation: true`; execute the same packages sequentially in the main agent while preserving ownership boundaries.
+
+Failure: downgrading the route to Guided/Direct because the runtime (or the user) forbids delegation.
+
+## 18. Routing uncertainty gets at most one question
+
+**Prompt:** Improve the checkout flow.
+
+Expected behavior: attempt cheap inspection of the checkout module first; if scope is still materially ambiguous, ask exactly one routing question with a recommended default.
+
+Failure: asking an open-ended "what's the scope?" question without inspecting first, or asking more than one routing question.

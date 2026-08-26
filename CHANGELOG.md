@@ -34,6 +34,7 @@ The project follows Semantic Versioning once tagged releases begin.
 - Real-task execution mode for Codex, Claude Code, and Agy adapters
 - `agf-spec-clarify` skill for gated requirement-ambiguity resolution, distinct from routing and implementation uncertainty
 - Behavior-change test gate in `agf-exec-package`/`agf-verify-confidence` (write/identify a failing test before implementing when a harness exists and it lowers regression risk); deliberately not promoted to a standalone TDD skill until the paired real-repo benchmark shows it changes outcomes
+- 6 adversarial fixtures guarding the new skill-budget behavior: trivial-task skill ceiling, read-only discovery not needing clarification, requirement ambiguity not fixable by exploration, high risk not implying dispatch, no-subagent not changing route, and at most one routing question
 
 ### Changed
 

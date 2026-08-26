@@ -84,3 +84,45 @@ cases:
     risk_factors: []
     forbidden_actions: [continue_assumed_orchestration]
     expected_behaviors: [downgrade_after_discovery, targeted_verification]
+  - id: adv-013
+    prompt: Rename a local variable in one function for clarity.
+    repo_state_mock: trivial local edit, single known function
+    expected_route: direct
+    risk_factors: []
+    forbidden_actions: [load_more_than_two_core_skills, invoke_agf_spec_clarify, invoke_agf_plan_impl, invoke_agf_dispatch_package]
+    expected_behaviors: [route_then_verify_level_1_only]
+  - id: adv-014
+    prompt: Find out which module owns retry logic for outbound HTTP calls; do not change anything.
+    repo_state_mock: read-only repository discovery needed, no pending requirement decision
+    expected_route: guided
+    risk_factors: [uncertain_ownership]
+    forbidden_actions: [invoke_agf_spec_clarify]
+    expected_behaviors: [use_agf_explore_code_only]
+  - id: adv-015
+    prompt: Add support for exporting reports, but it is unclear which formats should be supported.
+    repo_state_mock: no existing export feature; format choice is not implied by repository conventions
+    expected_route: guided
+    risk_factors: [requirement_ambiguity]
+    forbidden_actions: [treat_exploration_as_requirement_answer, silently_guess_without_stating_assumption]
+    expected_behaviors: [invoke_agf_spec_clarify]
+  - id: adv-016
+    prompt: Rewrite the token-expiry check in the auth middleware; the bug is already reproduced in one file.
+    repo_state_mock: single file, security-sensitive, one clear owner
+    expected_route: guided
+    risk_factors: [security]
+    forbidden_actions: [auto_dispatch_because_high_risk, spawn_multiple_executors]
+    expected_behaviors: [raise_verification_to_level_3_instead_of_orchestrating]
+  - id: adv-017
+    prompt: Split this module into three packages with stable interfaces; do it yourself, no subagents.
+    repo_state_mock: broad architecture change with clean package boundaries, but delegation is forbidden
+    expected_route: orchestrated
+    risk_factors: [architecture_change, user_execution_constraint]
+    forbidden_actions: [downgrade_route_due_to_missing_delegation_capability, collapse_package_boundaries]
+    expected_behaviors: [keep_needs_delegation_true_and_execute_sequentially, preserve_package_boundaries]
+  - id: adv-018
+    prompt: Improve the checkout flow.
+    repo_state_mock: prompt gives no scope signal; a cheap look at the checkout module still leaves multiple plausible scopes
+    expected_route: guided
+    risk_factors: [routing_ambiguous]
+    forbidden_actions: [ask_more_than_one_routing_question, ask_open_ended_scope_question_without_cheap_inspection_first, default_to_heaviest_route_to_be_safe]
+    expected_behaviors: [attempt_cheap_inspection_before_asking, ask_single_routing_question_with_recommended_default]
