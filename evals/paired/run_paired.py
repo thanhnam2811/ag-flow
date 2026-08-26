@@ -113,6 +113,9 @@ def clone_arm(repo: str, base_ref: str, destination: Path) -> None:
 def repo_delta(cwd: Path) -> dict[str, Any]:
     status = git("status", "--porcelain=v1", cwd=cwd)
     changed_files = [line[3:] for line in status.splitlines() if len(line) >= 4]
+    # Intent-to-add so `git diff HEAD` counts new (untracked) files' content,
+    # not just modifications to already-tracked files.
+    git("add", "-N", "--", ".", cwd=cwd)
     diff_numstat = git("diff", "--numstat", "HEAD", cwd=cwd)
     added = deleted = 0
     for line in diff_numstat.splitlines():
