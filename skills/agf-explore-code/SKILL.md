@@ -26,6 +26,18 @@ Return a compact context brief containing:
 
 Prefer symbol/file summaries over raw dumps. Do not read entire directories by default.
 
+## When step 3 triggers, expand one step at a time
+
+Only follow this ladder once local search genuinely doesn't answer the question — do not start here:
+
+1. target file/symbol
+2. direct callers, implementations, tests
+3. one abstraction layer up
+4. subsystem map
+5. broader architecture — only if evidence actually crosses that boundary
+
+Stop as soon as the current step resolves the decision; do not continue up the ladder for completeness.
+
 ## Delegated explorer behavior
 
 If the runtime supports subagents and delegation is useful, delegate exploration as a read-only role. The explorer must not edit code or make architecture decisions on behalf of the orchestrator.
