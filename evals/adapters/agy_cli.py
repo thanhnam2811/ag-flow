@@ -25,16 +25,26 @@ def _try_result_text(envelope: dict[str, Any]) -> str | None:
     return None
 
 
+class _TransientAgyError(RuntimeError):
+    """A recognized transient failure (CANCELED/empty response) worth retrying."""
+
+
 def _extract_envelope(stdout: str) -> tuple[str, dict[str, Any], str | None]:
     try:
         val = json.loads(stdout)
-        if isinstance(val, dict):
-            text = _try_result_text(val)
-            if text:
-                stats = val.get("stats") or val.get("usage") or {}
-                return text, stats, val.get("session_id") or val.get("sessionId")
     except Exception:
-        pass
+        val = None
+    if isinstance(val, dict):
+        text = _try_result_text(val)
+        if text:
+            stats = val.get("stats") or val.get("usage") or {}
+            return text, stats, val.get("session_id") or val.get("sessionId")
+        if "response" in val and (
+            val.get("status") == "CANCELED" or not str(val.get("response") or "").strip()
+        ):
+            raise _TransientAgyError(
+                f"Agy call returned no result (status={val.get('status')!r}): {stdout[:500]}"
+            )
 
     parsed_objects: list[dict[str, Any]] = []
     for line in stdout.splitlines():
@@ -82,7 +92,7 @@ def _invoke(
         total_latency_ms += latency_ms
         try:
             result_text, stats, session_id = _extract_envelope(stdout)
-        except RuntimeError as exc:
+        except _TransientAgyError as exc:
             last_error = exc
             continue
         usage = usage_dict(
