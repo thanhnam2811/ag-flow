@@ -23,6 +23,11 @@ Persist decisions and state, not transcript history.
 - generic repository explanations
 - abandoned hypotheses unless they prevent repeated mistakes
 - raw tool output that can be reproduced cheaply
+- content already captured in an existing plan/spec/ADR/issue/diff — reference its path or URL instead of copying it
+
+## Never persist secrets
+
+Never write secrets, tokens, credentials, or other sensitive values into a handoff artifact. Reference where they are configured (an env var name, a secrets-manager key) instead of the value itself.
 
 ## Durable vs transient knowledge
 
