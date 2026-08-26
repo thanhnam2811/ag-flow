@@ -35,11 +35,15 @@ The project follows Semantic Versioning once tagged releases begin.
 - `agf-spec-clarify` skill for gated requirement-ambiguity resolution, distinct from routing and implementation uncertainty
 - Behavior-change test gate in `agf-exec-package`/`agf-verify-confidence` (write/identify a failing test before implementing when a harness exists and it lowers regression risk); deliberately not promoted to a standalone TDD skill until the paired real-repo benchmark shows it changes outcomes
 - 6 adversarial fixtures guarding the new skill-budget behavior: trivial-task skill ceiling, read-only discovery not needing clarification, requirement ambiguity not fixable by exploration, high risk not implying dispatch, no-subagent not changing route, and at most one routing question
+- Simplicity gate in `agf-plan-impl`/`agf-exec-package`/`agf-verify-confidence`, and output-discipline wording rules in `agf-session-handoff` — primitives borrowed in spirit (not name or persistence mode) from the Ponytail and Caveman skills
 
 ### Fixed
 
 - Stale pre-rename skill paths in `evals/run_benchmarks.py` and `evals/paired/run_paired.py` that made every real-CLI benchmark case fail with `FileNotFoundError` after the `agf-*` rename
 - Bounded retry in the Agy adapter (`evals/adapters/agy_cli.py`) for the CLI's intrinsic `CANCELED`/empty-response flakiness (~20-25% of calls), independent of concurrency
+- Paired benchmark treatment prompt only loaded 6 of the 9 current skills, silently dropping `agf-spec-clarify`, `agf-debug-systematic`, and `agf-session-handoff` from the arm under test
+- Paired benchmark `repo_delta()` undercounted `lines_added` because `git diff --numstat HEAD` ignores untracked files; now intent-to-adds (`git add -N`) before diffing
+- Agy adapter retried every parse failure, including deterministic ones retrying can never fix; narrowed to only the recognized transient CANCELED/empty-response case
 
 ### Changed
 
