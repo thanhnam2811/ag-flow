@@ -24,7 +24,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 FIXTURE_DIR = ROOT / "tests" / "fixtures"
-ROUTING_SKILL = ROOT / "skills" / "adaptive-routing" / "SKILL.md"
+ROUTING_SKILL = ROOT / "skills" / "agf-route-adaptive" / "SKILL.md"
 
 RUNTIMES = {
     "codex": "evals.adapters.codex_cli",

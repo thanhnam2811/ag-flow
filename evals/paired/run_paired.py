@@ -25,12 +25,12 @@ RUNTIMES = {
 }
 
 SKILL_PATHS = [
-    ROOT / "skills" / "adaptive-routing" / "SKILL.md",
-    ROOT / "skills" / "codebase-exploration" / "SKILL.md",
-    ROOT / "skills" / "implementation-planning" / "SKILL.md",
-    ROOT / "skills" / "work-package-dispatch" / "SKILL.md",
-    ROOT / "skills" / "work-package-execution" / "SKILL.md",
-    ROOT / "skills" / "verification" / "SKILL.md",
+    ROOT / "skills" / "agf-route-adaptive" / "SKILL.md",
+    ROOT / "skills" / "agf-explore-code" / "SKILL.md",
+    ROOT / "skills" / "agf-plan-impl" / "SKILL.md",
+    ROOT / "skills" / "agf-dispatch-package" / "SKILL.md",
+    ROOT / "skills" / "agf-exec-package" / "SKILL.md",
+    ROOT / "skills" / "agf-verify-confidence" / "SKILL.md",
 ]
 
 
