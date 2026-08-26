@@ -28,9 +28,12 @@ SKILL_PATHS = [
     ROOT / "skills" / "agf-route-adaptive" / "SKILL.md",
     ROOT / "skills" / "agf-explore-code" / "SKILL.md",
     ROOT / "skills" / "agf-plan-impl" / "SKILL.md",
+    ROOT / "skills" / "agf-spec-clarify" / "SKILL.md",
     ROOT / "skills" / "agf-dispatch-package" / "SKILL.md",
     ROOT / "skills" / "agf-exec-package" / "SKILL.md",
     ROOT / "skills" / "agf-verify-confidence" / "SKILL.md",
+    ROOT / "skills" / "agf-debug-systematic" / "SKILL.md",
+    ROOT / "skills" / "agf-session-handoff" / "SKILL.md",
 ]
 
 
