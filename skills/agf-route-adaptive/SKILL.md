@@ -1,6 +1,6 @@
 ---
 name: agf-route-adaptive
-description: Automatically classify a coding task by scope, uncertainty, risk, and parallelizability, then choose the cheapest reliable execution path and which gated skills apply. Use for non-trivial coding work when the user did not explicitly choose an execution strategy.
+description: Entry point for any coding task. Classify scope, uncertainty, risk, and parallelizability, then choose the cheapest reliable execution path (Direct/Guided/Orchestrated) and which gated skills apply — even a trivial change should route Direct rather than skip routing. Run this first unless the user already gave an explicit execution strategy.
 ---
 
 # Adaptive Routing

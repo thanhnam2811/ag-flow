@@ -44,6 +44,7 @@ The project follows Semantic Versioning once tagged releases begin.
 - Paired benchmark treatment prompt only loaded 6 of the 9 current skills, silently dropping `agf-spec-clarify`, `agf-debug-systematic`, and `agf-session-handoff` from the arm under test
 - Paired benchmark `repo_delta()` undercounted `lines_added` because `git diff --numstat HEAD` ignores untracked files; now intent-to-adds (`git add -N`) before diffing
 - Agy adapter retried every parse failure, including deterministic ones retrying can never fix; narrowed to only the recognized transient CANCELED/empty-response case
+- `agf-route-adaptive`'s description said "use for non-trivial coding work," contradicting its own adversarial fixture (`adv-013`), which expects it to run and route Direct even for trivial changes; skill-matching engines can only see the description, so this actively discouraged routing the cases most likely to need a fast, cheap route
 
 ### Changed
 
