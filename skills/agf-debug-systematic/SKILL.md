@@ -16,6 +16,16 @@ Prefer evidence over edit-and-pray loops.
 5. **Fix the cause** — make the smallest coherent change that addresses the supported root cause.
 6. **Verify** — reproduce the original path, then run relevant regression checks.
 
+## Fast path for obvious causes
+
+If reproduction and evidence already identify one clear causal defect — skip the hypothesis loop:
+
+1. Verify the causal link (confirm this is actually what's failing, not just plausible).
+2. Apply the smallest fix.
+3. Regression-verify.
+
+Still requires reproduction and evidence; this is not a shortcut to guess-and-fix. Fall back to the full workflow above as soon as the cause isn't already this clear.
+
 ## Rules
 
 - Do not stack multiple speculative fixes before observing results.
