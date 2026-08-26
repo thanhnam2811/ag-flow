@@ -24,6 +24,7 @@ Persist decisions and state, not transcript history.
 - abandoned hypotheses unless they prevent repeated mistakes
 - raw tool output that can be reproduced cheaply
 - content already captured in an existing plan/spec/ADR/issue/diff — reference its path or URL instead of copying it
+- filler, repetition, and narrative framing — compress prose, not information; keep exact commands, paths, symbols, APIs, errors, constraints, and unresolved risks intact
 
 ## Never persist secrets
 

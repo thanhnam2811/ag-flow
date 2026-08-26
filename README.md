@@ -193,6 +193,7 @@ The validation/eval layer intentionally stays small: Python stdlib plus `PyYAML`
 - Keep core skills runtime-agnostic; isolate capability-specific fallbacks.
 - Report deltas, evidence, and unresolved risks instead of chronological agent logs.
 - Do not promote a metric beyond what the benchmark actually measures.
+- Treat output compression (terse status/handoff wording) as a measured hypothesis, not an assumed saving — it can add tokens elsewhere (e.g. skill prompts) even while shortening output.
 
 ## Repository layout
 
