@@ -149,11 +149,12 @@ Post-`agf-*`-rename, post-primitive-sharpening snapshot, run against the same ro
 | --- | --- | --- | --- | --- | --- |
 | Codex CLI | 43/43 | 0 | 0.96 | 1.00 | 1.00 |
 | Claude Code CLI | 43/43 | 0 | 0.80 | 1.00 | 1.00 |
-| Antigravity CLI (`agy`) | 21/43 | 22 | 0.90 (of completed) | n/a (too few adversarial cases completed) | n/a |
+| Antigravity CLI (`agy`) | 42/43 | 1 | 0.92 | 1.00 | 0.94 |
+
+`agy` was run standalone (not concurrently with the other two runtimes) to avoid contending for the same account's subscription quota. Its single error (`route-021`) was a `CANCELED` response on all 3 retry attempts — the CLI's own intrinsic flakiness (see Fixed entry in `CHANGELOG.md`), not an ag-flow defect. Running all three runtimes concurrently against the same `agy` account instead exhausts its quota mid-run and produces an unrepresentative error rate — keep `agy` runs isolated from other concurrent CLI usage.
 
 Notes:
 
-- The `agy` run was launched concurrently with the Codex and Claude runs against the same account and hit the CLI's own subscription quota mid-run (`Individual quota reached`); the errors are an external rate limit, not an ag-flow or adapter defect. Run `agy` on its own (not alongside other runtimes) for a representative full-suite number.
 - Misroutes were plausible model judgment calls on borderline cases (e.g. treating a high-risk-but-single-workstream change as `guided` instead of `orchestrated`, or a locally-scoped schema change as `direct` instead of `guided`), not policy contradictions — see `references/routing-matrix.md` for the rules being applied.
 - Routing accuracy varies by CLI/model, as expected for a policy-conformance benchmark rather than a fixed-model eval.
 
