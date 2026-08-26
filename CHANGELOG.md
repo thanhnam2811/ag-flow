@@ -32,6 +32,7 @@ The project follows Semantic Versioning once tagged releases begin.
 - Paired real-repository benchmark harness for vanilla CLI vs ag-flow treatment runs
 - Isolated pinned-revision clones, repository-delta metrics, and reusable paired task manifests
 - Real-task execution mode for Codex, Claude Code, and Agy adapters
+- `agf-spec-clarify` skill for gated requirement-ambiguity resolution, distinct from routing and implementation uncertainty
 
 ### Changed
 

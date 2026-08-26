@@ -73,6 +73,7 @@ npx skills add thanhnam2811/ag-flow \
 | [`agf-verify-confidence`](skills/agf-verify-confidence/) | Verify claims through execution with risk-aware depth |
 | [`agf-debug-systematic`](skills/agf-debug-systematic/) | Debug from evidence and hypotheses instead of speculative edits |
 | [`agf-session-handoff`](skills/agf-session-handoff/) | Persist only the minimum state needed to resume safely |
+| [`agf-spec-clarify`](skills/agf-spec-clarify/) | Resolve requirement ambiguity that would materially change the outcome |
 
 > Naming: `agf-<domain>-<name>` — grep-able, collision-safe across skill packs (e.g. avoids clashing with an unrelated `systematic-debugging` or `test-driven-development` skill from another pack). See [`CHANGELOG.md`](CHANGELOG.md) for the old → new mapping.
 
@@ -201,6 +202,7 @@ ag-flow/
 │   ├── agf-route-adaptive/
 │   ├── agf-explore-code/
 │   ├── agf-plan-impl/
+│   ├── agf-spec-clarify/
 │   ├── agf-dispatch-package/
 │   ├── agf-exec-package/
 │   ├── agf-verify-confidence/
