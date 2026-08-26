@@ -25,6 +25,8 @@ If a missing decision would change public interfaces, shared ownership, architec
 - Read additional context only when necessary to complete or verify the package.
 - Avoid unrelated cleanup and opportunistic refactors.
 - Prefer the smallest coherent implementation that satisfies acceptance criteria.
+- Do not add speculative extension points, one-use abstractions, or config nobody requested.
+- Do not add a dependency for something the stdlib or platform already provides.
 
 ## Behavior-change test gate
 

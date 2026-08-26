@@ -28,6 +28,18 @@ For each meaningful step capture:
 - Make hidden assumptions explicit when they can change implementation.
 - Keep plans compact enough to remain useful during execution.
 
+## Simplicity gate
+
+Before adding complexity, check in order:
+
+1. Can this requirement be omitted because it isn't actually needed?
+2. Does the repository, stdlib, or platform already provide it?
+3. Can an existing abstraction be extended instead of adding a new one?
+4. Is a new abstraction/config/dependency justified by more than one real use case now?
+5. Can the same behavior ship with a smaller diff?
+
+Simplicity is a constraint after correctness, acceptance criteria, compatibility, and safety — never cut necessary robustness just to shrink the diff.
+
 ## Decide whether to delegate
 
 A multi-step plan does not automatically justify multiple agents. Delegate only when work packages can be isolated with explicit ownership and the coordination cost is lower than sequential execution.

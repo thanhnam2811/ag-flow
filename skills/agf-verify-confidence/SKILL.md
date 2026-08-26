@@ -54,7 +54,7 @@ If the runtime supports subagents, use a fresh reviewer with only the task contr
 Verify through two lenses — internal reasoning, not a required output format:
 
 - **Spec fidelity** — did we build what was requested? Acceptance criteria, missing/extra behavior.
-- **Engineering confidence** — invariants, interface compatibility, error/edge paths, integration across packages, executable evidence.
+- **Engineering confidence** — invariants, interface compatibility, error/edge paths, integration across packages, unnecessary complexity, executable evidence.
 
 A clean implementation of the wrong requirement should fail spec fidelity even when engineering confidence is high.
 
