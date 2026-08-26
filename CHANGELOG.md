@@ -36,6 +36,7 @@ The project follows Semantic Versioning once tagged releases begin.
 - Behavior-change test gate in `agf-exec-package`/`agf-verify-confidence` (write/identify a failing test before implementing when a harness exists and it lowers regression risk); deliberately not promoted to a standalone TDD skill until the paired real-repo benchmark shows it changes outcomes
 - 6 adversarial fixtures guarding the new skill-budget behavior: trivial-task skill ceiling, read-only discovery not needing clarification, requirement ambiguity not fixable by exploration, high risk not implying dispatch, no-subagent not changing route, and at most one routing question
 - Simplicity gate in `agf-plan-impl`/`agf-exec-package`/`agf-verify-confidence`, and output-discipline wording rules in `agf-session-handoff` — primitives borrowed in spirit (not name or persistence mode) from the Ponytail and Caveman skills
+- README guidance for guaranteeing routing runs every session by adding a one-line bootstrap instruction to the consuming project's `CLAUDE.md`/`AGENTS.md`, since skill descriptions are matched, not force-loaded
 
 ### Fixed
 

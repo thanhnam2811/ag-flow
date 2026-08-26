@@ -61,6 +61,14 @@ npx skills add thanhnam2811/ag-flow \
   --global
 ```
 
+### Guarantee routing runs (optional)
+
+Skills are invoked by matching their `description` against the task — reliable most of the time, but not guaranteed. `CLAUDE.md`/`AGENTS.md` are always loaded into every session regardless of skill matching, so for a hard guarantee that every coding task gets routed, add one line to your project's `CLAUDE.md` (Claude Code) or `AGENTS.md` (Codex):
+
+```markdown
+For every coding task, consult the `agf-route-adaptive` skill first to classify and route it — even trivial changes should route Direct rather than skip routing.
+```
+
 ## Core skills
 
 | Skill | Responsibility |
