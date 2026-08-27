@@ -18,6 +18,15 @@ Confirm:
 
 If a missing decision would change public interfaces, shared ownership, architecture, or data safety, stop and escalate instead of guessing.
 
+## Execution authority
+
+Stop before executing an irreversible, production-affecting, externally visible, or destructive action that has not been explicitly authorized. Preparing code, commands, migrations, release artifacts, or deployment steps is allowed; actually running/publishing/applying them requires explicit user approval when that action crosses the current execution authority. Authorization can already be granted by the user's original request (e.g. "build and deploy this to production") — do not add a redundant second confirmation when authority was already explicit.
+
+- Allowed without extra approval: write migration code, generate SQL, prepare deployment config, build release artifact, draft rollback command.
+- Escalate before: run migration against production data, execute destructive SQL, deploy to production, publish package/release, rotate/revoke real credentials.
+
+Route decides how much workflow. Risk decides verification strength. Authority decides whether an action may actually be executed — a separate dimension from both.
+
 ## Execution rules
 
 - Change only owned files unless the package explicitly permits expansion.

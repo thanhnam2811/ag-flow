@@ -102,7 +102,7 @@ When a runtime supports subagents, these roles can be delegated. Otherwise the s
 
 - **Direct** — local, low-risk, clearly bounded work.
 - **Guided** — multi-file, uncertain, or risk-sensitive work that benefits from exploration and planning.
-- **Orchestrated** — cross-system, high-risk, or genuinely parallel work with clean ownership boundaries.
+- **Orchestrated** — cross-system, broad-integration-risk, or genuinely parallel work with clean ownership boundaries.
 
 See [`references/routing-matrix.md`](references/routing-matrix.md).
 
