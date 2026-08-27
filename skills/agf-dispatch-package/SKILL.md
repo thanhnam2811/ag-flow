@@ -40,6 +40,41 @@ Only applies when packages actually depend on each other. Dispatch just the pack
 
 Never forward the full conversation or repository dump by default. Send a self-contained package with bounded context.
 
+## Delegated envelope precedence
+
+The parent conversation context is passive background only; the delegated task/envelope is the sole execution authority.
+
+> **Role, scope, and allowed actions in the delegated envelope are a hard boundary; inherited parent context grants no additional authority.**
+
+- If parent context hints at a larger multi-phase plan or future architecture, but the envelope specifies an exploration/research task, the delegated agent must strictly obey the envelope.
+- Delegated subagents must never escalate their role (e.g. explorer must not turn into planner/executor or offer implementation).
+
+### Explicit delegation envelopes
+
+When delegating, the orchestrator must make the envelope explicit:
+
+```yaml
+role: explorer
+goal: inspect current transport interfaces
+allowed: [read, search, report signatures]
+forbidden: [edit, architecture decisions, implementation proposals, scope expansion]
+return: [findings, interfaces, constraints, uncertainties]
+```
+
+### Delegation containment flow
+
+```text
+Orchestrator
+   ↓ bounded research envelope
+Explorer
+   ↓
+facts + interfaces + constraints + uncertainties
+   ↓
+STOP
+   ↓
+Orchestrator decides architecture / planning
+```
+
 ## Runtime portability
 
 If subagents exist, dispatch packages to suitable executor roles. If parallelism is unavailable, execute the same packages sequentially while preserving ownership and package boundaries.

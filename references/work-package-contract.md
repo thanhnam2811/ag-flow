@@ -70,6 +70,62 @@ Route decides how much workflow. Risk decides verification strength. Authority d
 - no verification path
 - no escalation boundary
 
+## Delegated envelope precedence
+
+The parent conversation context is passive background only; the delegated task/envelope is the sole execution authority.
+
+> **Role, scope, and allowed actions in the delegated envelope are a hard boundary; inherited parent context grants no additional authority.**
+
+Delegated subagents must strictly adhere to their assigned role and envelope:
+- Explorers must not make architecture decisions, choose implementation strategies, or offer implementation.
+- Executors must not redesign the global task or edit outside writable ownership.
+
+## Research / exploration envelope contract
+
+When delegating exploration/research, use a dedicated bounded envelope:
+
+```yaml
+role: explorer
+goal: inspect current transport interfaces
+
+context:
+  relevant_files:
+    - <path>
+  relevant_symbols:
+    - <symbol>
+
+allowed:
+  - read
+  - search
+  - report signatures/interfaces/conventions
+
+forbidden:
+  - edit
+  - architecture decisions
+  - implementation proposals
+  - scope expansion
+
+return:
+  - findings
+  - interfaces
+  - constraints
+  - uncertainties
+```
+
+### Delegation containment flow
+
+```text
+Orchestrator
+   ↓ bounded research envelope
+Explorer
+   ↓
+facts + interfaces + constraints + uncertainties
+   ↓
+STOP
+   ↓
+Orchestrator decides architecture / planning
+```
+
 ## Executor return shape
 
 Prefer delta knowledge:

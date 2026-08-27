@@ -40,7 +40,27 @@ Stop as soon as the current step resolves the decision; do not continue up the l
 
 ## Delegated explorer behavior
 
-If the runtime supports subagents and delegation is useful, delegate exploration as a read-only role. The explorer must not edit code or make architecture decisions on behalf of the orchestrator.
+If the runtime supports subagents and delegation is useful, delegate exploration as a strictly read-only role bounded by the delegated envelope.
+
+> **Role, scope, and allowed actions in the delegated envelope are a hard boundary; inherited parent context grants no additional authority.**
+
+### Hard scope boundary
+
+When acting as a delegated explorer:
+
+- **Allowed actions:**
+  - Read files and search code.
+  - Report existing signatures, interfaces, dependencies, conventions, and verification hooks found in the repository.
+- **Forbidden actions (strictly prohibited):**
+  - Making architecture decisions (e.g. choosing directory structure, framework layout, service boundaries).
+  - Choosing implementation strategies or details (e.g. concurrency limits, transport/streaming protocols).
+  - Expanding scope beyond the assigned envelope.
+  - Editing files or executing mutations.
+  - Offering implementation proposals or asking to implement (e.g. "want me to implement Phase 1?").
+- **Uncertainty boundary:**
+  - If a decision or requirement does not have a definitive answer in the repository, record it explicitly under `Uncertainties / decisions required` and **STOP**. Do not guess, decide, or propose design solutions to fill the gap.
+
+### Return contract and containment flow
 
 Return only:
 
@@ -48,9 +68,9 @@ Return only:
 - Relevant paths/symbols
 - Constraints/invariants
 - Verification hooks
-- Uncertainties
+- Uncertainties / decisions required
 
-Do not return a chronological exploration log.
+Do not return a chronological exploration log. Once findings and uncertainties are returned, **STOP**. The orchestrator is the sole authority for architecture decisions and planning.
 
 ## Context budget
 

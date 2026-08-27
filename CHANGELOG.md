@@ -37,6 +37,10 @@ The project follows Semantic Versioning once tagged releases begin.
 - 6 adversarial fixtures guarding the new skill-budget behavior: trivial-task skill ceiling, read-only discovery not needing clarification, requirement ambiguity not fixable by exploration, high risk not implying dispatch, no-subagent not changing route, and at most one routing question
 - Simplicity gate in `agf-plan-impl`/`agf-exec-package`/`agf-verify-confidence`, and output-discipline wording rules in `agf-session-handoff` — primitives borrowed in spirit (not name or persistence mode) from the Ponytail and Caveman skills
 - README guidance for guaranteeing routing runs every session by adding a one-line bootstrap instruction to the consuming project's `CLAUDE.md`/`AGENTS.md`, since skill descriptions are matched, not force-loaded
+- Delegation containment hard scope boundary in `agf-explore-code` preventing delegated explorers from making architecture decisions, proposing implementation strategies, expanding scope, or offering implementation
+- Delegated envelope precedence principle and explicit envelope specification in `agf-dispatch-package` (parent context is passive background only; delegated envelope is execution authority)
+- Research/exploration envelope schema and containment lifecycle in `references/work-package-contract.md`
+- Adversarial fixture `adv-019` guarding against explorer role escalation and context bleed from parent session
 
 ### Fixed
 

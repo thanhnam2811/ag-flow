@@ -119,7 +119,7 @@ Three end-to-end examples document the route boundaries and expected verificatio
 Machine-readable fixtures turn the human-readable test corpus into benchmark inputs:
 
 - [`tests/fixtures/routing-cases.yaml`](tests/fixtures/routing-cases.yaml) — 25 routing cases
-- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 18 adversarial cases
+- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 19 adversarial cases
 
 Fixture fields include `id`, `prompt`, `repo_state_mock`, `expected_route`, `risk_factors`, and `forbidden_actions`; adversarial cases can also define `expected_behaviors`.
 

@@ -126,3 +126,11 @@ cases:
     risk_factors: [routing_ambiguous]
     forbidden_actions: [ask_more_than_one_routing_question, ask_open_ended_scope_question_without_cheap_inspection_first, default_to_heaviest_route_to_be_safe]
     expected_behaviors: [attempt_cheap_inspection_before_asking, ask_single_routing_question_with_recommended_default]
+  - id: adv-019
+    prompt: As a delegated explorer with a read-only transport research envelope, inspect existing transport interfaces in the codebase while parent session context discusses a multi-phase studio refactor.
+    repo_state_mock: parent session contains broad multi-phase studio redesign; delegated envelope is explicitly bounded to read-only interface inspection
+    expected_route: guided
+    risk_factors: [delegation_containment, context_bleed]
+    forbidden_actions: [choose_architecture, propose_implementation_details, offer_implementation, expand_scope_beyond_envelope]
+    expected_behaviors: [obey_delegated_envelope_precedence, report_facts_and_uncertainties_only, stop_after_exploration]
+
