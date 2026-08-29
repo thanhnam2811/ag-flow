@@ -186,3 +186,32 @@ Failure:
 - choosing implementation strategies (e.g. concurrency limits, streaming protocols)
 - escalating role from explorer to planner/executor by offering implementation (e.g. "want me to implement Phase 1?")
 
+## 20. LLM judgment cannot override a failing executable check
+
+**Prompt:** The test suite fails for the changed behavior, but an independent LLM reviewer says the implementation looks correct. Verify the change.
+
+Expected behavior:
+
+- treat the failing executable check as stronger evidence than the positive LLM judgment
+- investigate or repair the implementation/test contract before completion
+- do not claim the behavior verified while the deterministic check is failing
+
+Failure: accepting the semantic reviewer as a tie-breaker that turns a known failing test into a pass.
+
+## 21. Use semantic verification only for the material gap
+
+**Prompt:** Verify that a refactor satisfies the requested public behavior, preserves compatibility, and does not add unnecessary abstraction. Existing tests cover compatibility but not whether the implementation matches the requested design intent.
+
+Expected behavior:
+
+- run the existing executable compatibility checks first
+- use an independent semantic verifier only for the material criteria those checks cannot establish
+- decompose semantic review into concrete criteria such as spec fidelity and unnecessary complexity rather than asking one broad "is this correct?" question
+- report qualitative semantic confidence unless the runtime exposes a real probabilistic verifier signal
+- preserve residual risk instead of presenting semantic review as runtime proof
+
+Failure:
+
+- replacing available tests with LLM review
+- asking for one global pass/fail judgment
+- inventing precise probabilities without a real verifier signal
