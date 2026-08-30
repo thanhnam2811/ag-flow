@@ -24,6 +24,25 @@ Each package must include:
 - **Acceptance criteria** — observable completion conditions.
 - **Verification** — commands/checks expected from the executor.
 - **Escalation conditions** — when the executor must stop and return to the orchestrator.
+- **Model tier** (optional) — recommended cost tier for this package (`cheap`, `balanced`).
+
+## Model tiering for delegated roles
+
+Match model tiers to the cognitive requirements of each semantic role:
+
+- **Code Executor** — use **cheap / fast tier** (e.g. `flash_lite`, `flash`, `haiku`, `gpt-4o-mini`). Implementing code against a bounded specification does not require expensive frontier models.
+- **Reviewer** — use **balanced / mid tier** (e.g. `flash`, `sonnet`, `gpt-4o`). Independent review requires nuanced reasoning to evaluate spec fidelity and edge cases, but does not require expensive orchestration models.
+- **Explorer** — use **cheap / fast tier** (read-only search, inspection, and signature extraction).
+- **Orchestrator** — uses the session's default/high model to own architecture, boundary setting, and final integration.
+
+## Atomic scoping and task clarity (Anti-hallucination & speed)
+
+Cheap models execute fastest and with zero hallucinations when the task is atomic and explicit:
+
+1. **Smallest coherent scope** — carve packages into single-responsibility units (1-2 tightly coupled files, a specific function, or an isolated test slice). Never give an executor an open-ended multi-subsystem assignment.
+2. **Explicit, unambiguous contracts** — specify exact writable target files, exact symbol names, expected method signatures, and forbidden areas. Do not force the executor to guess architectural decisions.
+3. **Deterministic verification** — supply exact, executable commands (e.g. targeted unit test, lint command) so the executor can verify its own output without subjective speculation.
+4. **Immediate escalation over guessing** — if any requirement or contract is missing, the executor must halt and return to the orchestrator instead of hallucinating code.
 
 ## Ownership rules
 
@@ -51,28 +70,48 @@ The parent conversation context is passive background only; the delegated task/e
 
 ### Explicit delegation envelopes
 
-When delegating, the orchestrator must make the envelope explicit:
+When delegating, the orchestrator must make the envelope explicit.
+
+#### Explorer envelope (read-only discovery)
 
 ```yaml
 role: explorer
+model_tier: cheap
 goal: inspect current transport interfaces
 allowed: [read, search, report signatures]
 forbidden: [edit, architecture decisions, implementation proposals, scope expansion]
 return: [findings, interfaces, constraints, uncertainties]
 ```
 
+#### Reviewer envelope (bounded review perimeter)
+
+When dispatching an independent reviewer subagent, strictly bound the review perimeter to avoid sprawling commentary or style bikeshedding:
+
+```yaml
+role: reviewer
+model_tier: balanced
+goal: verify auth middleware fix against acceptance criteria and regression risks
+target_diff: [src/auth/middleware.ts, tests/auth/middleware.test.ts]
+allowed: [verify spec fidelity, check regression risks in touched area, inspect verification evidence]
+forbidden: [review untouched files, subjective style bikeshedding, unsolicited architectural refactoring, re-implementing]
+return: [spec_fidelity, engineering_confidence, findings, residual_risk]
+```
+
 ### Delegation containment flow
 
 ```text
-Orchestrator
-   ↓ bounded research envelope
-Explorer
-   ↓
-facts + interfaces + constraints + uncertainties
-   ↓
-STOP
-   ↓
-Orchestrator decides architecture / planning
+Orchestrator (High / Inherit)
+   │
+   ├── bounded research envelope (Cheap tier) ──► Explorer
+   │                                                 │ facts & interfaces only
+   │                                                 ▼ STOP
+   ├── bounded atomic package (Cheap tier) ─────► Executor
+   │                                                 │ minimal scope, code + self-verify
+   │                                                 ▼ STOP
+   └── bounded review envelope (Balanced tier) ─► Reviewer
+                                                     │ spec fidelity & regressions only
+                                                     ▼ STOP
+Orchestrator integrates and verifies claims
 ```
 
 ## Runtime portability

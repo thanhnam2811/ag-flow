@@ -47,7 +47,22 @@ Use when any of these apply:
 - orchestrated multi-package implementation
 - user explicitly requested independent review
 
-If the runtime supports subagents, use a fresh reviewer with only the task contract, relevant diff/context, and verification entry points. Otherwise perform a second-pass review separated from implementation reasoning. Executor-reported verification is input to this review, not a substitute for it — re-run or independently inspect the evidence rather than accepting the executor's claim.
+If the runtime supports subagents, use a fresh reviewer subagent with a **balanced / mid-tier model** (e.g. `flash`, `sonnet`, `gpt-4o`). A balanced tier provides sufficient reasoning depth for edge-case and contract analysis without incurring the heavy token cost and latency of frontier models. Supply only the task contract, relevant diff/context, and verification entry points. Otherwise perform a second-pass review separated from implementation reasoning. Executor-reported verification is input to this review, not a substitute for it — re-run or independently inspect the evidence rather than accepting the executor's claim.
+
+### Bounded review perimeter (Anti-sprawl)
+
+To prevent the reviewer from wandering into unrelated code or generating sprawling commentary:
+
+- **Pass only the perimeter** — supply strictly the task contract, the exact changed diff, relevant interfaces, and verification commands. Do not forward the entire codebase or full orchestrator conversation history.
+- **Bound the evaluation** — assess only:
+  1. Spec fidelity against explicit acceptance criteria.
+  2. Regression risk and invariant preservation in the touched subsystem.
+  3. Consistency between reported verification results and the actual diff.
+- **Enforce negative boundaries** — explicitly forbid the reviewer from:
+  - inspecting or critiquing untouched files
+  - debating subjective stylistic preferences or formatting (style bikeshedding)
+  - proposing unsolicited architectural redesigns or future scope expansion
+  - re-implementing the solution unless requested to provide a minimal patch
 
 ## Semantic verifier gate
 
@@ -76,7 +91,7 @@ Verify through two lenses — internal reasoning, not a required output format:
 
 When the semantic verifier gate fires, decompose these lenses into the smallest material criteria that cannot already be settled by executable evidence. A clean implementation of the wrong requirement should fail spec fidelity even when engineering confidence is high.
 
-Do not re-implement the feature unless a repair is required.
+Stay within the bounded review perimeter: do not re-implement the feature or comment outside the touched boundary unless a focused repair is required.
 
 ## Failure loop
 

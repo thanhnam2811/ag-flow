@@ -1,4 +1,5 @@
 goal: Add refresh-token rotation without changing the public login response shape
+model_tier: cheap
 
 ownership:
   writable:

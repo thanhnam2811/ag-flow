@@ -16,7 +16,9 @@ Confirm:
 - required interfaces and invariants are known
 - verification commands are available or can be inferred cheaply
 
-If a missing decision would change public interfaces, shared ownership, architecture, or data safety, stop and escalate instead of guessing.
+Executors frequently run on cost-effective, fast model tiers (`cheap`). Cheap models execute fastest and remain entirely hallucination-free when operating strictly within clear, atomic boundaries.
+
+If a missing decision would change public interfaces, shared ownership, architecture, or data safety, or if any requirement is ambiguous, stop and escalate instead of guessing or hallucinating implementation details.
 
 ## Execution authority
 

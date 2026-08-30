@@ -41,6 +41,13 @@ The project follows Semantic Versioning once tagged releases begin.
 - Delegated envelope precedence principle and explicit envelope specification in `agf-dispatch-package` (parent context is passive background only; delegated envelope is execution authority)
 - Research/exploration envelope schema and containment lifecycle in `references/work-package-contract.md`
 - Adversarial fixture `adv-019` guarding against explorer role escalation and context bleed from parent session
+- Semantic verifier gate in `agf-verify-confidence` for evaluating material gaps beyond executable checks without overriding deterministic failures
+- Adversarial fixtures `adv-020` and `adv-021` guarding executable precedence over LLM judgment and bounded semantic verification
+- Cost-aware subagent model tiering (`cheap` for executors, `balanced` for reviewers) in `agf-dispatch-package`, `agf-verify-confidence`, `references/capability-fallbacks.md`, and `README.md`
+- Atomic minimal scoping and explicit task clarity guidelines for code executors to guarantee rapid execution and zero hallucinations on cheap model tiers
+- Bounded review perimeter ("khoanh vùng") and anti-sprawl constraints in `agf-verify-confidence`, `agf-dispatch-package`, `references/verification-levels.md`, and `references/work-package-contract.md` to prevent reviewer wandering, stylistic bikeshedding, and out-of-scope architectural critique
+- Schema extension (`model_tier`) in `references/schemas/work-package.schema.json` and canonical example in `references/examples/work-package.example.yaml`
+- Adversarial fixtures `adv-022` (atomic scoping & anti-hallucination for cheap code executors) and `adv-023` (bounded review perimeter for balanced reviewers)
 
 ### Fixed
 

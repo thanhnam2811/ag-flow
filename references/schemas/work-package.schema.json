@@ -11,6 +11,10 @@
       "type": "string",
       "minLength": 5
     },
+    "model_tier": {
+      "type": "string",
+      "enum": ["cheap", "balanced", "high"]
+    },
     "ownership": {
       "type": "object",
       "additionalProperties": false,

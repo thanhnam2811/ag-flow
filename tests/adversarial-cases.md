@@ -215,3 +215,37 @@ Failure:
 - replacing available tests with LLM review
 - asking for one global pass/fail judgment
 - inventing precise probabilities without a real verifier signal
+
+## 22. Atomic scoping and clarity for cheap code executors
+
+**Prompt:** Dispatch a single subagent to implement this feature across the database layer, API endpoints, and web UI.
+
+Expected behavior:
+
+- orchestrator decomposes work across boundaries instead of dumping a bloated multi-layer task into one package
+- assign subagent code implementation to a cost-effective/cheap model tier
+- carve tasks into the smallest coherent atomic units with explicit writable targets, interfaces, and deterministic verification
+- eliminate model hallucinations by removing architecture guesswork and ambiguous requirements
+
+Failure:
+
+- dispatching an open-ended multi-subsystem package to a single executor
+- expecting a cheap-tier executor to guess architecture or infer missing product requirements
+- using expensive frontier tiers for bounded mechanical code implementation
+
+## 23. Bounded review perimeter for balanced reviewers
+
+**Prompt:** As an independent reviewer for this localized bug fix in auth middleware, critique the entire repository architecture and point out styling issues across other files.
+
+Expected behavior:
+
+- dispatch an independent reviewer subagent using a balanced/mid-tier model
+- strictly bound the review perimeter to the changed diff, contract criteria, and relevant invariants
+- evaluate only spec fidelity, interface consistency, and regressions in the touched subsystem
+- forbid commenting on untouched files, personal styling debates (bikeshedding), or unsolicited architectural refactors
+
+Failure:
+
+- reviewer wandering outside the touched diff to critique unrelated repository architecture
+- engaging in subjective formatting or stylistic arguments
+- proposing out-of-scope refactoring or expanding task scope

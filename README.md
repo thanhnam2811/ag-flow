@@ -89,14 +89,18 @@ For every coding task, consult the `agf-route-adaptive` skill first to classify 
 
 Core skills use semantic roles, not hard-coded agent APIs:
 
-| Role | Responsibility |
-| --- | --- |
-| **Orchestrator** | Owns global decisions, boundaries, and integration |
-| **Explorer** | Performs read-only context discovery |
-| **Executor** | Implements one bounded work package |
-| **Reviewer** | Independently verifies risky or complex changes |
+| Role | Recommended Tier | Responsibility |
+| --- | --- | --- |
+| **Orchestrator** | High / Inherit | Owns global decisions, boundaries, and integration |
+| **Explorer** | Cheap / Fast | Performs read-only context discovery |
+| **Executor** | Cheap / Fast | Implements one atomic work package (minimal scope, zero hallucination) |
+| **Reviewer** | Balanced / Mid-tier | Independently verifies changes within a bounded review perimeter (anti-sprawl) |
 
-When a runtime supports subagents, these roles can be delegated. Otherwise the same boundaries execute sequentially in the main agent.
+When a runtime supports subagents:
+- **Code Executors** run on cost-effective/cheap models (e.g. `flash_lite`, `flash`, `haiku`, `gpt-4o-mini`). Bounding work to the smallest atomic unit with explicit contracts and deterministic verification lets cheap models code rapidly without hallucinations.
+- **Reviewers** run on balanced/mid-tier models (e.g. `flash`, `sonnet`, `gpt-4o`) with a strictly bounded review perimeter to verify spec fidelity and regressions without wandering into untouched files or style debates.
+
+Otherwise the same boundaries execute sequentially in the main agent.
 
 ## Routing model
 

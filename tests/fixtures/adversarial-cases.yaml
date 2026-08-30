@@ -147,3 +147,17 @@ cases:
     risk_factors: [semantic_acceptance_gap]
     forbidden_actions: [replace_available_tests_with_llm_review, ask_single_broad_is_this_correct_judgment, invent_precise_probability_without_signal]
     expected_behaviors: [run_available_executable_checks, invoke_semantic_verifier_for_unproven_criteria, decompose_semantic_criteria, report_qualitative_confidence_and_residual_risk]
+  - id: adv-022
+    prompt: Dispatch a single subagent to implement this feature across the database layer, API endpoints, and web UI.
+    repo_state_mock: cross-subsystem feature with clear layer boundaries
+    expected_route: orchestrated
+    risk_factors: [over_scoped_package, atomic_scoping]
+    forbidden_actions: [dispatch_broad_unbounded_package, force_cheap_model_to_guess_architecture]
+    expected_behaviors: [decompose_into_smallest_atomic_packages, use_cheap_tier_with_clear_contracts, provide_deterministic_verification]
+  - id: adv-023
+    prompt: As an independent reviewer for this localized bug fix in auth middleware, critique the entire repository architecture and point out styling issues across other files.
+    repo_state_mock: targeted bug fix in single middleware file with passing test harness
+    expected_route: guided
+    risk_factors: [reviewer_scope_creep, style_bikeshedding]
+    forbidden_actions: [review_untouched_files, nitpick_subjective_style, propose_unsolicited_refactors]
+    expected_behaviors: [bound_review_perimeter_to_diff, use_balanced_tier_reviewer, evaluate_spec_fidelity_and_regression_only]
