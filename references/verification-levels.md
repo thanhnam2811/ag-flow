@@ -31,7 +31,7 @@ Use for high-risk or broad changes:
 - cross-system changes
 - orchestrated multi-package implementations
 
-The independent reviewer should receive the task contract, relevant diff/context, and verification entry points—not the implementer's full chain of reasoning. When delegated to a subagent, use a **balanced / mid-tier model** and enforce a **bounded review perimeter**: evaluate only spec fidelity against acceptance criteria, invariant preservation, and regression risks in the touched area; forbid inspecting untouched files, subjective style bikeshedding, or unsolicited redesigns.
+The independent reviewer should receive the task contract, relevant diff/context, and verification entry points—not the implementer's full chain of reasoning. When delegated to a subagent, use a **balanced / mid-tier model** and enforce a **bounded review perimeter**: evaluate spec fidelity against acceptance criteria, invariant preservation, and regression risks in the affected area. The reviewer may inspect directly relevant untouched callers, callees, interfaces, contracts, and tests when needed to establish those claims, but must not expand into unrelated code, subjective style bikeshedding, or unsolicited redesigns.
 
 ## Evidence reporting
 

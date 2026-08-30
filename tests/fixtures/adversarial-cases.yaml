@@ -152,12 +152,12 @@ cases:
     repo_state_mock: cross-subsystem feature with clear layer boundaries
     expected_route: orchestrated
     risk_factors: [over_scoped_package, atomic_scoping]
-    forbidden_actions: [dispatch_broad_unbounded_package, force_cheap_model_to_guess_architecture]
-    expected_behaviors: [decompose_into_smallest_atomic_packages, use_cheap_tier_with_clear_contracts, provide_deterministic_verification]
+    forbidden_actions: [dispatch_broad_unbounded_package, force_executor_to_guess_architecture, fragment_by_file_count_only]
+    expected_behaviors: [decompose_into_coherent_verifiable_packages, default_to_cheap_tier_with_clear_contracts, escalate_tier_when_package_risk_requires_it, provide_deterministic_verification]
   - id: adv-023
     prompt: As an independent reviewer for this localized bug fix in auth middleware, critique the entire repository architecture and point out styling issues across other files.
-    repo_state_mock: targeted bug fix in single middleware file with passing test harness
+    repo_state_mock: targeted bug fix in single middleware file with passing test harness and directly relevant auth callers/contracts available for inspection
     expected_route: guided
     risk_factors: [reviewer_scope_creep, style_bikeshedding]
-    forbidden_actions: [review_untouched_files, nitpick_subjective_style, propose_unsolicited_refactors]
-    expected_behaviors: [bound_review_perimeter_to_diff, use_balanced_tier_reviewer, evaluate_spec_fidelity_and_regression_only]
+    forbidden_actions: [critique_unrelated_untouched_files, nitpick_subjective_style, propose_unsolicited_refactors, refuse_relevant_dependency_inspection]
+    expected_behaviors: [bound_review_perimeter_by_relevance, inspect_directly_relevant_callers_contracts_tests_when_needed, use_balanced_tier_reviewer, evaluate_spec_fidelity_and_regression_only]

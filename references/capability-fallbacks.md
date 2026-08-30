@@ -40,24 +40,27 @@ Use static inspection only as a fallback and explicitly report that executable v
 
 ## Model tiering across runtimes
 
-When the runtime supports specifying models or subagent profiles, map semantic roles to cost and reasoning tiers:
+When the runtime supports specifying models or subagent profiles, map semantic roles to cost and reasoning tiers while allowing risk-based escalation:
 
-| Semantic Role | Model Tier | Purpose & Constraints | Example Models |
+| Semantic Role | Default Tier | Purpose & Constraints | Example Models |
 | --- | --- | --- | --- |
 | **Orchestrator** | High / Inherit | Global architecture, decomposition, planning, integration | Default session model, Pro / Opus / GPT-4o |
 | **Explorer** | Cheap / Fast | Bounded read-only discovery, symbol searches, interface extraction | Flash-Lite, Flash, Haiku, GPT-4o-mini |
-| **Executor** | Cheap / Fast | Rapid code implementation of atomic, unambiguous packages; deterministic self-verification | Flash-Lite, Flash, Haiku, GPT-4o-mini |
-| **Reviewer** | Balanced / Mid-tier | Nuanced evaluation of spec fidelity, regression risk, and invariants within bounded perimeter | Flash, Sonnet, GPT-4o |
+| **Executor** | Cheap / Fast | Bounded implementation with explicit contracts and deterministic self-verification; escalate when risk/complexity remains high | Flash-Lite, Flash, Haiku, GPT-4o-mini |
+| **Reviewer** | Balanced / Mid-tier | Nuanced evaluation of spec fidelity, regression risk, and invariants within a relevance-bounded perimeter | Flash, Sonnet, GPT-4o |
 
-### Why cheap tier for code execution?
+### Why cheap tier by default for code execution?
 
-- **Speed and efficiency:** Bounded coding packages do not require expensive frontier models.
-- **Anti-hallucination guarantee:** Hallucination occurs when cheap models are handed ambiguous, sprawling tasks or forced to make architectural decisions. When the orchestrator provides **minimal atomic scope**, **explicit writable targets**, **unambiguous contracts**, and **deterministic verification commands**, cheap models execute near-instantly with zero hallucination.
+- **Speed and efficiency:** Many bounded coding packages do not require expensive frontier models.
+- **Reduced ambiguity:** Minimal coherent scope, explicit writable targets, unambiguous contracts, and deterministic verification reduce unsupported assumptions and hallucination risk.
+- **Evidence still wins:** Cheap-tier execution is an optimization, not a correctness guarantee. Verification remains mandatory.
+
+Escalate an executor from `cheap` to `balanced` when a bounded package is still cognitively or operationally risky: security-critical logic, concurrency/distributed state, tricky migrations, unfamiliar or underspecified APIs, or repeated executor/verification failure.
 
 ### Why balanced tier with bounded perimeter for review?
 
-- **Nuanced reasoning:** Catching subtle spec divergences or regression edge cases requires balanced reasoning that smaller/cheaper models often miss.
-- **Anti-sprawl constraint ("khoanh vùng"):** Even capable reviewer models degrade if allowed to wander. Restricting reviewer input strictly to the assigned diff, contract, and verification hooks prevents stylistic nitpicking, subjective bikeshedding, and out-of-scope architectural sprawl.
+- **Nuanced reasoning:** Catching subtle spec divergences or regression edge cases often benefits from balanced reasoning.
+- **Anti-sprawl constraint ("khoanh vùng"):** Bound review by relevance to the affected behavior. Permit inspection of directly relevant callers, callees, interfaces, contracts, and tests, while forbidding unrelated architectural critique, style bikeshedding, and scope expansion.
 
 ## Portability rules
 

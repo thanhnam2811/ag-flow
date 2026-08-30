@@ -4,7 +4,7 @@ A work package is a bounded execution unit. It should contain enough context to 
 
 ```yaml
 goal: <one concrete outcome>
-model_tier: cheap  # optional: cheap | balanced | high (default: cheap for code execution)
+model_tier: cheap  # optional: cheap | balanced | high (cheap is a default, not a correctness guarantee)
 
 ownership:
   writable:
@@ -34,6 +34,7 @@ verification:
 
 escalate_if:
   - <condition requiring orchestrator decision>
+  - executor tier is too weak for security-critical, concurrency/state-heavy, migration-sensitive, unfamiliar/underspecified, or repeatedly failing work
   - executing an irreversible, production-affecting, externally visible, or
     destructive action that has not been explicitly authorized
 
@@ -55,27 +56,30 @@ Route decides how much workflow. Risk decides verification strength. Authority d
 
 ## Model tiering and role assignment
 
-- **Executor (Code)**: Use **cheap / cost-efficient tier** (e.g. `flash_lite`, `flash`, `haiku`, `gpt-4o-mini`). When scope is atomic and the contract is unambiguous, cheap models code rapidly with zero hallucinations.
-- **Reviewer**: Use **balanced / mid tier** (e.g. `flash`, `sonnet`, `gpt-4o`). Nuanced independent evaluation requires balanced reasoning capability without paying for top-tier frontier models.
-- **Explorer**: Use **cheap / fast tier** (strictly bounded read-only inspection).
-- **Orchestrator**: Default/high session model (system architecture, package partitioning, integration).
+- **Executor (Code)**: Default to **cheap / cost-efficient tier** for bounded, unambiguous work with deterministic verification. Escalate to **balanced** when cognitive or operational risk remains high despite narrow scope.
+- **Reviewer**: Use **balanced / mid tier** for nuanced independent evaluation.
+- **Explorer**: Use **cheap / fast tier** for strictly bounded read-only inspection.
+- **Orchestrator**: Use the default/high session model for architecture, package partitioning, and integration.
+
+Model tiering is a cost/latency optimization. Clear contracts reduce ambiguity and hallucination risk; they do not eliminate model error, so verification remains mandatory.
 
 ## Good package properties
 
 - one owner for every write surface
 - little or no overlapping write ownership
-- atomic minimal scope: carved to the smallest coherent single-responsibility unit
+- one coherent decision boundary with independently verifiable acceptance criteria
 - explicit interfaces between packages
 - no hidden architecture decisions delegated accidentally
-- crystal-clear task description, preventing cheap models from guessing or hallucinating
+- clear task description that minimizes unsupported assumptions
 - acceptance criteria test behavior rather than implementation style
-- deterministic verification commands supplied up front
+- deterministic verification commands supplied up front where possible
 - enough repository facts to avoid repeated broad exploration
 
 ## Bad package smells
 
 - "fix everything related to auth"
 - large multi-subsystem packages delegated to a single subagent
+- artificial fragmentation by file count when one coherent change spans several tightly coupled files
 - multiple packages editing the same shared contract independently
 - full repository dumps attached as context
 - executor expected to infer product/architecture choices
@@ -90,8 +94,8 @@ The parent conversation context is passive background only; the delegated task/e
 
 Delegated subagents must strictly adhere to their assigned role and envelope:
 - Explorers must not make architecture decisions, choose implementation strategies, or offer implementation.
-- Executors must operate within atomic boundaries, not redesign the global task or edit outside writable ownership.
-- Reviewers must stay strictly within the bounded review perimeter and not wander into untouched code or style nitpicking.
+- Executors must operate within coherent bounded ownership, not redesign the global task or edit outside writable ownership.
+- Reviewers must stay within a relevance-bounded review perimeter and avoid unrelated code or style nitpicking.
 
 ## Research / exploration envelope contract
 
@@ -128,7 +132,7 @@ return:
 
 ## Review envelope contract (Bounded review perimeter)
 
-When delegating independent review, bound the review perimeter ("khoanh vùng") strictly to prevent review sprawl, personal style debates, and wandering into untouched modules:
+When delegating independent review, bound the review by relevance to the changed behavior rather than by the Git diff alone:
 
 ```yaml
 role: reviewer
@@ -153,11 +157,12 @@ verification_entrypoints:
 
 allowed:
   - verify spec fidelity against acceptance criteria
-  - verify regression risks and invariant preservation in touched areas
+  - inspect directly relevant callers, callees, interfaces, contracts, and tests needed to establish affected behavior
+  - verify regression risks and invariant preservation in the affected subsystem
   - compare reported verification evidence against actual diff
 
 forbidden:
-  - inspect or critique untouched files
+  - critique unrelated untouched code or expand into unrelated subsystems
   - subjective style nitpicking and formatting debates (bikeshedding)
   - out-of-scope architectural proposals or future redesigns
   - re-implementing code
@@ -166,7 +171,7 @@ return:
   - spec_fidelity: pass | fail
   - engineering_confidence: high | medium | low
   - findings:
-    - <concrete defect or invariant breach within touched boundary>
+    - <concrete defect or invariant breach within relevant boundary>
   - residual_risk:
     - <specific edge-case or unverified external assumption>
 ```
@@ -179,10 +184,10 @@ Orchestrator (High / Inherit)
    ├── bounded research envelope (Cheap tier) ──► Explorer
    │                                                 │ facts & interfaces only
    │                                                 ▼ STOP
-   ├── bounded atomic package (Cheap tier) ─────► Executor
-   │                                                 │ minimal scope, fast code + self-verify
+   ├── bounded package (Cheap default; escalate by risk) ─► Executor
+   │                                                 │ coherent scope, code + self-verify
    │                                                 ▼ STOP
-   └── bounded review envelope (Balanced tier) ─► Reviewer
+   └── relevance-bounded review envelope (Balanced tier) ─► Reviewer
                                                      │ bounded perimeter, spec & regressions only
                                                      ▼ STOP
 Orchestrator integrates and verifies claims

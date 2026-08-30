@@ -43,11 +43,11 @@ The project follows Semantic Versioning once tagged releases begin.
 - Adversarial fixture `adv-019` guarding against explorer role escalation and context bleed from parent session
 - Semantic verifier gate in `agf-verify-confidence` for evaluating material gaps beyond executable checks without overriding deterministic failures
 - Adversarial fixtures `adv-020` and `adv-021` guarding executable precedence over LLM judgment and bounded semantic verification
-- Cost-aware subagent model tiering (`cheap` for executors, `balanced` for reviewers) in `agf-dispatch-package`, `agf-verify-confidence`, `references/capability-fallbacks.md`, and `README.md`
-- Atomic minimal scoping and explicit task clarity guidelines for code executors to guarantee rapid execution and zero hallucinations on cheap model tiers
-- Bounded review perimeter ("khoanh vùng") and anti-sprawl constraints in `agf-verify-confidence`, `agf-dispatch-package`, `references/verification-levels.md`, and `references/work-package-contract.md` to prevent reviewer wandering, stylistic bikeshedding, and out-of-scope architectural critique
+- Cost-aware subagent model tiering with `cheap` as the default executor tier, risk-based escalation to `balanced`, and balanced reviewers in `agf-dispatch-package`, `agf-exec-package`, `agf-verify-confidence`, `references/capability-fallbacks.md`, and `README.md`
+- Coherent package scoping and explicit task contracts that reduce ambiguity and hallucination risk without claiming error-free model behavior
+- Relevance-bounded review perimeter ("khoanh vùng") and anti-sprawl constraints that allow inspection of directly relevant untouched dependencies/contracts/tests while forbidding unrelated critique, stylistic bikeshedding, and unsolicited redesigns
 - Schema extension (`model_tier`) in `references/schemas/work-package.schema.json` and canonical example in `references/examples/work-package.example.yaml`
-- Adversarial fixtures `adv-022` (atomic scoping & anti-hallucination for cheap code executors) and `adv-023` (bounded review perimeter for balanced reviewers)
+- Adversarial fixtures `adv-022` (coherent executor scoping, risk-aware tiering) and `adv-023` (relevance-bounded reviewer perimeter)
 
 ### Fixed
 

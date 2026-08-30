@@ -16,7 +16,9 @@ Confirm:
 - required interfaces and invariants are known
 - verification commands are available or can be inferred cheaply
 
-Executors frequently run on cost-effective, fast model tiers (`cheap`). Cheap models execute fastest and remain entirely hallucination-free when operating strictly within clear, atomic boundaries.
+Executors frequently run on cost-effective, fast model tiers (`cheap`). Clear, bounded packages reduce ambiguity and hallucination risk while improving speed and cost efficiency, but model tier never substitutes for verification.
+
+Escalate the executor tier from `cheap` to `balanced` when the package remains cognitively or operationally high-risk despite being bounded, including security-critical logic, concurrency/distributed-state behavior, tricky migrations, unfamiliar or underspecified APIs, or repeated executor/verification failure.
 
 If a missing decision would change public interfaces, shared ownership, architecture, or data safety, or if any requirement is ambiguous, stop and escalate instead of guessing or hallucinating implementation details.
 

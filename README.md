@@ -93,12 +93,12 @@ Core skills use semantic roles, not hard-coded agent APIs:
 | --- | --- | --- |
 | **Orchestrator** | High / Inherit | Owns global decisions, boundaries, and integration |
 | **Explorer** | Cheap / Fast | Performs read-only context discovery |
-| **Executor** | Cheap / Fast | Implements one atomic work package (minimal scope, zero hallucination) |
-| **Reviewer** | Balanced / Mid-tier | Independently verifies changes within a bounded review perimeter (anti-sprawl) |
+| **Executor** | Cheap / Fast by default | Implements one coherent bounded work package with explicit contracts and verification; escalates tier when risk warrants it |
+| **Reviewer** | Balanced / Mid-tier | Independently verifies affected behavior within a relevance-bounded review perimeter |
 
 When a runtime supports subagents:
-- **Code Executors** run on cost-effective/cheap models (e.g. `flash_lite`, `flash`, `haiku`, `gpt-4o-mini`). Bounding work to the smallest atomic unit with explicit contracts and deterministic verification lets cheap models code rapidly without hallucinations.
-- **Reviewers** run on balanced/mid-tier models (e.g. `flash`, `sonnet`, `gpt-4o`) with a strictly bounded review perimeter to verify spec fidelity and regressions without wandering into untouched files or style debates.
+- **Code Executors** normally run on cost-effective/cheap models (e.g. `flash_lite`, `flash`, `haiku`, `gpt-4o-mini`). Coherent scope, explicit contracts, and deterministic verification reduce ambiguity and hallucination risk; they do not guarantee error-free output. Escalate to a balanced tier for security-critical, concurrency/state-heavy, migration-sensitive, unfamiliar/underspecified, or repeatedly failing packages.
+- **Reviewers** normally run on balanced/mid-tier models (e.g. `flash`, `sonnet`, `gpt-4o`). Bound review by relevance to the affected behavior: directly relevant callers, callees, interfaces, contracts, and tests may be inspected when needed, while unrelated architectural critique and style bikeshedding remain out of scope.
 
 Otherwise the same boundaries execute sequentially in the main agent.
 
@@ -123,7 +123,7 @@ Three end-to-end examples document the route boundaries and expected verificatio
 Machine-readable fixtures turn the human-readable test corpus into benchmark inputs:
 
 - [`tests/fixtures/routing-cases.yaml`](tests/fixtures/routing-cases.yaml) — 25 routing cases
-- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 21 adversarial cases
+- [`tests/fixtures/adversarial-cases.yaml`](tests/fixtures/adversarial-cases.yaml) — 23 adversarial cases
 
 Fixture fields include `id`, `prompt`, `repo_state_mock`, `expected_route`, `risk_factors`, and `forbidden_actions`; adversarial cases can also define `expected_behaviors`.
 
